@@ -1,0 +1,1 @@
+feature specific classes and services can be kept inside like JokeService.dart within Joke feature/services
