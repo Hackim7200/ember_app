@@ -1,6 +1,10 @@
-import 'package:ember/features/todo/model/task.dart';
+import 'package:amplify_api/amplify_api.dart';
+import 'package:ember/features/todo/widget/add_task_bottom_sheet.dart';
 import 'package:ember/features/todo/widget/task_item.dart';
+
+import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 
 class TodaySection extends StatefulWidget {
   const TodaySection({super.key});
@@ -10,54 +14,100 @@ class TodaySection extends StatefulWidget {
 }
 
 class _TodaySectionState extends State<TodaySection> {
-  late final List<Task> dummyDataTasks;
+  late final List<Todo> dummyTodos;
+  List<Todo> _todos = [];
 
   @override
   void initState() {
     super.initState();
-    _initializeTodos();
+    _initializeDummyData();
+    _refreshTodos();
   }
 
-  void _initializeTodos() {
-    dummyDataTasks = [
-      Task(title: 'Morning exercise', isCompleted: false),
-      Task(title: 'Read news', isCompleted: false),
-      Task(title: 'Plan day', isCompleted: false),
-      Task(title: 'Lunch meeting', isCompleted: false),
-      Task(title: 'Review documents', isCompleted: false),
-      Task(title: 'Team standup', isCompleted: false),
-      Task(title: 'Dinner preparation', isCompleted: false),
-      Task(title: 'Evening walk', isCompleted: false),
-      Task(title: 'Plan tomorrow', isCompleted: false),
+  void _initializeDummyData() {
+    dummyTodos = [
+      Todo(id: '1', content: 'Morning exercise', isDone: false),
+      Todo(id: '2', content: 'Read news', isDone: false),
+      Todo(id: '3', content: 'Plan day', isDone: false),
+      Todo(id: '4', content: 'Lunch meeting', isDone: false),
+      Todo(id: '5', content: 'Review documents', isDone: false),
+      Todo(id: '6', content: 'Team standup', isDone: false),
+      Todo(id: '7', content: 'Dinner preparation', isDone: false),
+      Todo(id: '8', content: 'Evening walk', isDone: false),
+      Todo(id: '9', content: 'Plan tomorrow', isDone: false),
     ];
+  }
+
+  Future<void> _refreshTodos() async {
+    try {
+      final request = ModelQueries.list(Todo.classType);
+      final response = await Amplify.API.query(request: request).response;
+
+      final todos = response.data?.items;
+      if (response.hasErrors) {
+        safePrint('errors: ${response.errors}');
+        return;
+      }
+      setState(() {
+        _todos = todos!.whereType<Todo>().toList();
+      });
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return ReorderableListView.builder(
-      padding: const EdgeInsets.all(16.0),
-      itemCount: dummyDataTasks.length,
-      onReorder: (oldIndex, newIndex) {
-        setState(() {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
-          final item = dummyDataTasks.removeAt(oldIndex);
-          dummyDataTasks.insert(newIndex, item);
-        });
-      },
-      itemBuilder: (context, index) {
-        return TaskItem(
-          key: ValueKey(dummyDataTasks[index].title),
-          todo: dummyDataTasks[index],
-          onTap: () => {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => AddTaskBottomSheet(
+              onAddTask: () {
+                _refreshTodos();
+              },
+            ),
+          );
+        },
+      ),
+      body: RefreshIndicator(
+        // this provides refresh when pull down
+        onRefresh: _refreshTodos,
+        child: ReorderableListView.builder(
+          padding: const EdgeInsets.all(16.0),
+          itemCount: _todos.length,
+          onReorder: (oldIndex, newIndex) {
             setState(() {
-              dummyDataTasks[index].isCompleted =
-                  !dummyDataTasks[index].isCompleted;
-            }),
+              if (oldIndex < newIndex) {
+                newIndex -= 1;
+              }
+              final item = _todos.removeAt(oldIndex);
+              _todos.insert(newIndex, item);
+            });
           },
-        );
-      },
+          itemBuilder: (context, index) {
+            return TaskItem(
+              key: ValueKey(_todos[index].id),
+              todo: _todos[index],
+              onTap: () {
+                setState(() {
+                  final currentTodo = _todos[index];
+                  final updatedTodo = Todo(
+                    id: currentTodo.id,
+                    content: currentTodo.content,
+                    isDone: !(currentTodo.isDone ?? false),
+                  );
+                  _todos[index] = updatedTodo;
+                });
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }

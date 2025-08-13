@@ -1,7 +1,12 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
-  const AddTaskBottomSheet({super.key});
+  const AddTaskBottomSheet({super.key, required this.onAddTask});
+
+  final VoidCallback onAddTask;
 
   @override
   State<AddTaskBottomSheet> createState() => _AddTaskBottomSheetState();
@@ -17,6 +22,24 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
     _taskNameController.dispose();
     _breakdownController.dispose();
     super.dispose();
+  }
+
+  void _addTask() async {
+    final newTodo = Todo(
+      id: uuid(),
+      content: _taskNameController.text,
+      isDone: false,
+    );
+    final request = ModelMutations.create(newTodo);
+    final response = await Amplify.API.mutate(request: request).response;
+    if (response.hasErrors) {
+      safePrint('Creating Todo failed.');
+    } else {
+      safePrint('Creating Todo successful.');
+    }
+    if (mounted) {
+      Navigator.of(context).pop(newTodo);
+    }
   }
 
   @override
@@ -64,7 +87,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               controller: _taskNameController,
               decoration: InputDecoration(
                 hintText: 'Task name',
-
                 filled: true,
                 fillColor: theme.colorScheme.onSurface.withValues(alpha: 0.05),
                 border: OutlineInputBorder(
@@ -87,7 +109,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               maxLines: 3,
               decoration: InputDecoration(
                 hintText: 'Breakdown',
-
                 filled: true,
                 fillColor: theme.colorScheme.onSurface.withValues(alpha: 0.05),
                 border: OutlineInputBorder(
@@ -166,8 +187,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             ),
           ),
 
-          // Estimated hours section
-
           // Action buttons
           Padding(
             padding: const EdgeInsets.all(24),
@@ -196,13 +215,8 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      // Handle task creation here
-                      final taskData = {
-                        'name': _taskNameController.text,
-                        'breakdown': _breakdownController.text,
-                        'pomodoros': _pomodoros.toInt(),
-                      };
-                      Navigator.of(context).pop(taskData);
+                      _addTask();
+                      widget.onAddTask();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.colorScheme.primary,

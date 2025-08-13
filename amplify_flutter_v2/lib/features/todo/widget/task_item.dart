@@ -1,9 +1,9 @@
-import 'package:ember/features/todo/model/task.dart';
 import 'package:ember/features/todo/widget/custom_checkbox.dart';
+import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
 
 class TaskItem extends StatelessWidget {
-  final Task todo;
+  final Todo todo;
   final VoidCallback onTap;
 
   const TaskItem({super.key, required this.todo, required this.onTap});
@@ -26,19 +26,17 @@ class TaskItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    todo.title,
+                    todo.content!,
                     style: TextStyle(
                       fontSize: 16,
-                      decoration: todo.isCompleted
+                      decoration: todo.isDone!
                           ? TextDecoration.lineThrough
                           : null,
-                      color: todo.isCompleted
-                          ? Colors.grey[600]
-                          : Colors.black87,
+                      color: todo.isDone! ? Colors.grey[600] : Colors.black87,
                     ),
                   ),
                 ),
-                customCheckbox(context, todo.isCompleted),
+                customCheckbox(context, todo.isDone!),
               ],
             ),
           ),
