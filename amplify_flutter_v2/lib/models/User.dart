@@ -23,14 +23,11 @@ import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 
-/** This is an auto generated class representing the Todo type in your schema. */
-class Todo extends amplify_core.Model {
-  static const classType = const _TodoModelType();
+/** This is an auto generated class representing the User type in your schema. */
+class User extends amplify_core.Model {
+  static const classType = const _UserModelType();
   final String id;
-  final String? _content;
-  final bool? _isDone;
-  final int? _pomodoros;
-  final String? _breakdown;
+  final String? _name;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -41,26 +38,14 @@ class Todo extends amplify_core.Model {
   @override
   String getId() => id;
   
-  TodoModelIdentifier get modelIdentifier {
-      return TodoModelIdentifier(
+  UserModelIdentifier get modelIdentifier {
+      return UserModelIdentifier(
         id: id
       );
   }
   
-  String? get content {
-    return _content;
-  }
-  
-  bool? get isDone {
-    return _isDone;
-  }
-  
-  int? get pomodoros {
-    return _pomodoros;
-  }
-  
-  String? get breakdown {
-    return _breakdown;
+  String? get name {
+    return _name;
   }
   
   amplify_core.TemporalDateTime? get createdAt {
@@ -71,15 +56,12 @@ class Todo extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Todo._internal({required this.id, content, isDone, pomodoros, breakdown, createdAt, updatedAt}): _content = content, _isDone = isDone, _pomodoros = pomodoros, _breakdown = breakdown, _createdAt = createdAt, _updatedAt = updatedAt;
+  const User._internal({required this.id, name, createdAt, updatedAt}): _name = name, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Todo({String? id, String? content, bool? isDone, int? pomodoros, String? breakdown}) {
-    return Todo._internal(
+  factory User({String? id, String? name}) {
+    return User._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
-      content: content,
-      isDone: isDone,
-      pomodoros: pomodoros,
-      breakdown: breakdown);
+      name: name);
   }
   
   bool equals(Object other) {
@@ -89,12 +71,9 @@ class Todo extends amplify_core.Model {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Todo &&
+    return other is User &&
       id == other.id &&
-      _content == other._content &&
-      _isDone == other._isDone &&
-      _pomodoros == other._pomodoros &&
-      _breakdown == other._breakdown;
+      _name == other._name;
   }
   
   @override
@@ -104,12 +83,9 @@ class Todo extends amplify_core.Model {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("Todo {");
+    buffer.write("User {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("content=" + "$_content" + ", ");
-    buffer.write("isDone=" + (_isDone != null ? _isDone!.toString() : "null") + ", ");
-    buffer.write("pomodoros=" + (_pomodoros != null ? _pomodoros!.toString() : "null") + ", ");
-    buffer.write("breakdown=" + "$_breakdown" + ", ");
+    buffer.write("name=" + "$_name" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -117,62 +93,44 @@ class Todo extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Todo copyWith({String? content, bool? isDone, int? pomodoros, String? breakdown}) {
-    return Todo._internal(
+  User copyWith({String? name}) {
+    return User._internal(
       id: id,
-      content: content ?? this.content,
-      isDone: isDone ?? this.isDone,
-      pomodoros: pomodoros ?? this.pomodoros,
-      breakdown: breakdown ?? this.breakdown);
+      name: name ?? this.name);
   }
   
-  Todo copyWithModelFieldValues({
-    ModelFieldValue<String?>? content,
-    ModelFieldValue<bool?>? isDone,
-    ModelFieldValue<int?>? pomodoros,
-    ModelFieldValue<String?>? breakdown
+  User copyWithModelFieldValues({
+    ModelFieldValue<String?>? name
   }) {
-    return Todo._internal(
+    return User._internal(
       id: id,
-      content: content == null ? this.content : content.value,
-      isDone: isDone == null ? this.isDone : isDone.value,
-      pomodoros: pomodoros == null ? this.pomodoros : pomodoros.value,
-      breakdown: breakdown == null ? this.breakdown : breakdown.value
+      name: name == null ? this.name : name.value
     );
   }
   
-  Todo.fromJson(Map<String, dynamic> json)  
+  User.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
-      _content = json['content'],
-      _isDone = json['isDone'],
-      _pomodoros = (json['pomodoros'] as num?)?.toInt(),
-      _breakdown = json['breakdown'],
+      _name = json['name'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'content': _content, 'isDone': _isDone, 'pomodoros': _pomodoros, 'breakdown': _breakdown, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'name': _name, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
-    'content': _content,
-    'isDone': _isDone,
-    'pomodoros': _pomodoros,
-    'breakdown': _breakdown,
+    'name': _name,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
 
-  static final amplify_core.QueryModelIdentifier<TodoModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<TodoModelIdentifier>();
+  static final amplify_core.QueryModelIdentifier<UserModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<UserModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
-  static final CONTENT = amplify_core.QueryField(fieldName: "content");
-  static final ISDONE = amplify_core.QueryField(fieldName: "isDone");
-  static final POMODOROS = amplify_core.QueryField(fieldName: "pomodoros");
-  static final BREAKDOWN = amplify_core.QueryField(fieldName: "breakdown");
+  static final NAME = amplify_core.QueryField(fieldName: "name");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "Todo";
-    modelSchemaDefinition.pluralName = "Todos";
+    modelSchemaDefinition.name = "User";
+    modelSchemaDefinition.pluralName = "Users";
     
     modelSchemaDefinition.authRules = [
       amplify_core.AuthRule(
@@ -191,25 +149,7 @@ class Todo extends amplify_core.Model {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Todo.CONTENT,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Todo.ISDONE,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Todo.POMODOROS,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Todo.BREAKDOWN,
+      key: User.NAME,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
@@ -230,29 +170,29 @@ class Todo extends amplify_core.Model {
   });
 }
 
-class _TodoModelType extends amplify_core.ModelType<Todo> {
-  const _TodoModelType();
+class _UserModelType extends amplify_core.ModelType<User> {
+  const _UserModelType();
   
   @override
-  Todo fromJson(Map<String, dynamic> jsonData) {
-    return Todo.fromJson(jsonData);
+  User fromJson(Map<String, dynamic> jsonData) {
+    return User.fromJson(jsonData);
   }
   
   @override
   String modelName() {
-    return 'Todo';
+    return 'User';
   }
 }
 
 /**
  * This is an auto generated class representing the model identifier
- * of [Todo] in your schema.
+ * of [User] in your schema.
  */
-class TodoModelIdentifier implements amplify_core.ModelIdentifier<Todo> {
+class UserModelIdentifier implements amplify_core.ModelIdentifier<User> {
   final String id;
 
-  /** Create an instance of TodoModelIdentifier using [id] the primary key. */
-  const TodoModelIdentifier({
+  /** Create an instance of UserModelIdentifier using [id] the primary key. */
+  const UserModelIdentifier({
     required this.id});
   
   @override
@@ -270,7 +210,7 @@ class TodoModelIdentifier implements amplify_core.ModelIdentifier<Todo> {
   String serializeAsString() => serializeAsMap().values.join('#');
   
   @override
-  String toString() => 'TodoModelIdentifier(id: $id)';
+  String toString() => 'UserModelIdentifier(id: $id)';
   
   @override
   bool operator ==(Object other) {
@@ -278,7 +218,7 @@ class TodoModelIdentifier implements amplify_core.ModelIdentifier<Todo> {
       return true;
     }
     
-    return other is TodoModelIdentifier &&
+    return other is UserModelIdentifier &&
       id == other.id;
   }
   

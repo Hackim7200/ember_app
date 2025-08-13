@@ -23,20 +23,66 @@ class TaskItem extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
-                  child: Text(
-                    todo.content!,
-                    style: TextStyle(
-                      fontSize: 16,
-                      decoration: todo.isDone!
-                          ? TextDecoration.lineThrough
-                          : null,
-                      color: todo.isDone! ? Colors.grey[600] : Colors.black87,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              todo.content ?? '',
+                              style: TextStyle(
+                                fontSize: 16,
+                                decoration: todo.isDone == true
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                                color: todo.isDone == true
+                                    ? Colors.grey[600]
+                                    : Colors.black87,
+                              ),
+                            ),
+                          ),
+                          if (todo.pomodoros != null && todo.pomodoros! > 0)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    '🍅',
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    '${todo.pomodoros}',
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.redAccent,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                      if (todo.breakdown != null && todo.breakdown!.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            todo.breakdown!,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
-                customCheckbox(context, todo.isDone!),
+                customCheckbox(context, todo.isDone ?? false),
               ],
             ),
           ),

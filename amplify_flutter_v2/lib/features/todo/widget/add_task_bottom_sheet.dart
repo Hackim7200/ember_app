@@ -29,6 +29,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
       id: uuid(),
       content: _taskNameController.text,
       isDone: false,
+      breakdown: _breakdownController.text,
     );
     final request = ModelMutations.create(newTodo);
     final response = await Amplify.API.mutate(request: request).response;

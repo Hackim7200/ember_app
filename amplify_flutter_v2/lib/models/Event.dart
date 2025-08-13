@@ -23,14 +23,13 @@ import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 
-/** This is an auto generated class representing the Todo type in your schema. */
-class Todo extends amplify_core.Model {
-  static const classType = const _TodoModelType();
+/** This is an auto generated class representing the Event type in your schema. */
+class Event extends amplify_core.Model {
+  static const classType = const _EventModelType();
   final String id;
-  final String? _content;
-  final bool? _isDone;
-  final int? _pomodoros;
-  final String? _breakdown;
+  final String? _title;
+  final String? _description;
+  final amplify_core.TemporalDateTime? _date;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -41,26 +40,40 @@ class Todo extends amplify_core.Model {
   @override
   String getId() => id;
   
-  TodoModelIdentifier get modelIdentifier {
-      return TodoModelIdentifier(
+  EventModelIdentifier get modelIdentifier {
+      return EventModelIdentifier(
         id: id
       );
   }
   
-  String? get content {
-    return _content;
+  String get title {
+    try {
+      return _title!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
-  bool? get isDone {
-    return _isDone;
+  String? get description {
+    return _description;
   }
   
-  int? get pomodoros {
-    return _pomodoros;
-  }
-  
-  String? get breakdown {
-    return _breakdown;
+  amplify_core.TemporalDateTime get date {
+    try {
+      return _date!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   amplify_core.TemporalDateTime? get createdAt {
@@ -71,15 +84,14 @@ class Todo extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Todo._internal({required this.id, content, isDone, pomodoros, breakdown, createdAt, updatedAt}): _content = content, _isDone = isDone, _pomodoros = pomodoros, _breakdown = breakdown, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Event._internal({required this.id, required title, description, required date, createdAt, updatedAt}): _title = title, _description = description, _date = date, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Todo({String? id, String? content, bool? isDone, int? pomodoros, String? breakdown}) {
-    return Todo._internal(
+  factory Event({String? id, required String title, String? description, required amplify_core.TemporalDateTime date}) {
+    return Event._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
-      content: content,
-      isDone: isDone,
-      pomodoros: pomodoros,
-      breakdown: breakdown);
+      title: title,
+      description: description,
+      date: date);
   }
   
   bool equals(Object other) {
@@ -89,12 +101,11 @@ class Todo extends amplify_core.Model {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Todo &&
+    return other is Event &&
       id == other.id &&
-      _content == other._content &&
-      _isDone == other._isDone &&
-      _pomodoros == other._pomodoros &&
-      _breakdown == other._breakdown;
+      _title == other._title &&
+      _description == other._description &&
+      _date == other._date;
   }
   
   @override
@@ -104,12 +115,11 @@ class Todo extends amplify_core.Model {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("Todo {");
+    buffer.write("Event {");
     buffer.write("id=" + "$id" + ", ");
-    buffer.write("content=" + "$_content" + ", ");
-    buffer.write("isDone=" + (_isDone != null ? _isDone!.toString() : "null") + ", ");
-    buffer.write("pomodoros=" + (_pomodoros != null ? _pomodoros!.toString() : "null") + ", ");
-    buffer.write("breakdown=" + "$_breakdown" + ", ");
+    buffer.write("title=" + "$_title" + ", ");
+    buffer.write("description=" + "$_description" + ", ");
+    buffer.write("date=" + (_date != null ? _date!.format() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -117,62 +127,56 @@ class Todo extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Todo copyWith({String? content, bool? isDone, int? pomodoros, String? breakdown}) {
-    return Todo._internal(
+  Event copyWith({String? title, String? description, amplify_core.TemporalDateTime? date}) {
+    return Event._internal(
       id: id,
-      content: content ?? this.content,
-      isDone: isDone ?? this.isDone,
-      pomodoros: pomodoros ?? this.pomodoros,
-      breakdown: breakdown ?? this.breakdown);
+      title: title ?? this.title,
+      description: description ?? this.description,
+      date: date ?? this.date);
   }
   
-  Todo copyWithModelFieldValues({
-    ModelFieldValue<String?>? content,
-    ModelFieldValue<bool?>? isDone,
-    ModelFieldValue<int?>? pomodoros,
-    ModelFieldValue<String?>? breakdown
+  Event copyWithModelFieldValues({
+    ModelFieldValue<String>? title,
+    ModelFieldValue<String?>? description,
+    ModelFieldValue<amplify_core.TemporalDateTime>? date
   }) {
-    return Todo._internal(
+    return Event._internal(
       id: id,
-      content: content == null ? this.content : content.value,
-      isDone: isDone == null ? this.isDone : isDone.value,
-      pomodoros: pomodoros == null ? this.pomodoros : pomodoros.value,
-      breakdown: breakdown == null ? this.breakdown : breakdown.value
+      title: title == null ? this.title : title.value,
+      description: description == null ? this.description : description.value,
+      date: date == null ? this.date : date.value
     );
   }
   
-  Todo.fromJson(Map<String, dynamic> json)  
+  Event.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
-      _content = json['content'],
-      _isDone = json['isDone'],
-      _pomodoros = (json['pomodoros'] as num?)?.toInt(),
-      _breakdown = json['breakdown'],
+      _title = json['title'],
+      _description = json['description'],
+      _date = json['date'] != null ? amplify_core.TemporalDateTime.fromString(json['date']) : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'content': _content, 'isDone': _isDone, 'pomodoros': _pomodoros, 'breakdown': _breakdown, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'title': _title, 'description': _description, 'date': _date?.format(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
-    'content': _content,
-    'isDone': _isDone,
-    'pomodoros': _pomodoros,
-    'breakdown': _breakdown,
+    'title': _title,
+    'description': _description,
+    'date': _date,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
 
-  static final amplify_core.QueryModelIdentifier<TodoModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<TodoModelIdentifier>();
+  static final amplify_core.QueryModelIdentifier<EventModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<EventModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
-  static final CONTENT = amplify_core.QueryField(fieldName: "content");
-  static final ISDONE = amplify_core.QueryField(fieldName: "isDone");
-  static final POMODOROS = amplify_core.QueryField(fieldName: "pomodoros");
-  static final BREAKDOWN = amplify_core.QueryField(fieldName: "breakdown");
+  static final TITLE = amplify_core.QueryField(fieldName: "title");
+  static final DESCRIPTION = amplify_core.QueryField(fieldName: "description");
+  static final DATE = amplify_core.QueryField(fieldName: "date");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "Todo";
-    modelSchemaDefinition.pluralName = "Todos";
+    modelSchemaDefinition.name = "Event";
+    modelSchemaDefinition.pluralName = "Events";
     
     modelSchemaDefinition.authRules = [
       amplify_core.AuthRule(
@@ -191,27 +195,21 @@ class Todo extends amplify_core.Model {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.id());
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Todo.CONTENT,
+      key: Event.TITLE,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
+      key: Event.DESCRIPTION,
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Todo.ISDONE,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Todo.POMODOROS,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Todo.BREAKDOWN,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+      key: Event.DATE,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.nonQueryField(
@@ -230,29 +228,29 @@ class Todo extends amplify_core.Model {
   });
 }
 
-class _TodoModelType extends amplify_core.ModelType<Todo> {
-  const _TodoModelType();
+class _EventModelType extends amplify_core.ModelType<Event> {
+  const _EventModelType();
   
   @override
-  Todo fromJson(Map<String, dynamic> jsonData) {
-    return Todo.fromJson(jsonData);
+  Event fromJson(Map<String, dynamic> jsonData) {
+    return Event.fromJson(jsonData);
   }
   
   @override
   String modelName() {
-    return 'Todo';
+    return 'Event';
   }
 }
 
 /**
  * This is an auto generated class representing the model identifier
- * of [Todo] in your schema.
+ * of [Event] in your schema.
  */
-class TodoModelIdentifier implements amplify_core.ModelIdentifier<Todo> {
+class EventModelIdentifier implements amplify_core.ModelIdentifier<Event> {
   final String id;
 
-  /** Create an instance of TodoModelIdentifier using [id] the primary key. */
-  const TodoModelIdentifier({
+  /** Create an instance of EventModelIdentifier using [id] the primary key. */
+  const EventModelIdentifier({
     required this.id});
   
   @override
@@ -270,7 +268,7 @@ class TodoModelIdentifier implements amplify_core.ModelIdentifier<Todo> {
   String serializeAsString() => serializeAsMap().values.join('#');
   
   @override
-  String toString() => 'TodoModelIdentifier(id: $id)';
+  String toString() => 'EventModelIdentifier(id: $id)';
   
   @override
   bool operator ==(Object other) {
@@ -278,7 +276,7 @@ class TodoModelIdentifier implements amplify_core.ModelIdentifier<Todo> {
       return true;
     }
     
-    return other is TodoModelIdentifier &&
+    return other is EventModelIdentifier &&
       id == other.id;
   }
   

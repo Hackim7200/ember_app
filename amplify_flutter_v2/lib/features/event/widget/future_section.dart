@@ -1,8 +1,16 @@
 import 'package:ember/app/theme.dart';
 import 'package:flutter/material.dart';
 
-class FutureSection extends StatelessWidget {
+class FutureSection extends StatefulWidget {
   const FutureSection({super.key});
+
+  @override
+  State<FutureSection> createState() => _FutureSectionState();
+}
+
+class _FutureSectionState extends State<FutureSection> {
+
+
 
   @override
   Widget build(BuildContext context) {
