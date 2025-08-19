@@ -20,7 +20,7 @@ const schema = a.schema({
   Event: a
     .model({
       title: a.string().required(),
-      description: a.string(),
+      icon: a.integer().required(),
       date: a.datetime().required(),
     })
     .authorization((allow) => [allow.owner()]),

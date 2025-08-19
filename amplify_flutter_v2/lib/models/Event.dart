@@ -28,7 +28,7 @@ class Event extends amplify_core.Model {
   static const classType = const _EventModelType();
   final String id;
   final String? _title;
-  final String? _description;
+  final int? _icon;
   final amplify_core.TemporalDateTime? _date;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
@@ -59,8 +59,17 @@ class Event extends amplify_core.Model {
     }
   }
   
-  String? get description {
-    return _description;
+  int get icon {
+    try {
+      return _icon!;
+    } catch(e) {
+      throw amplify_core.AmplifyCodeGenModelException(
+          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
+          recoverySuggestion:
+            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
+          underlyingException: e.toString()
+          );
+    }
   }
   
   amplify_core.TemporalDateTime get date {
@@ -84,13 +93,13 @@ class Event extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Event._internal({required this.id, required title, description, required date, createdAt, updatedAt}): _title = title, _description = description, _date = date, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Event._internal({required this.id, required title, required icon, required date, createdAt, updatedAt}): _title = title, _icon = icon, _date = date, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Event({String? id, required String title, String? description, required amplify_core.TemporalDateTime date}) {
+  factory Event({String? id, required String title, required int icon, required amplify_core.TemporalDateTime date}) {
     return Event._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       title: title,
-      description: description,
+      icon: icon,
       date: date);
   }
   
@@ -104,7 +113,7 @@ class Event extends amplify_core.Model {
     return other is Event &&
       id == other.id &&
       _title == other._title &&
-      _description == other._description &&
+      _icon == other._icon &&
       _date == other._date;
   }
   
@@ -118,7 +127,7 @@ class Event extends amplify_core.Model {
     buffer.write("Event {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("title=" + "$_title" + ", ");
-    buffer.write("description=" + "$_description" + ", ");
+    buffer.write("icon=" + (_icon != null ? _icon!.toString() : "null") + ", ");
     buffer.write("date=" + (_date != null ? _date!.format() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
@@ -127,23 +136,23 @@ class Event extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Event copyWith({String? title, String? description, amplify_core.TemporalDateTime? date}) {
+  Event copyWith({String? title, int? icon, amplify_core.TemporalDateTime? date}) {
     return Event._internal(
       id: id,
       title: title ?? this.title,
-      description: description ?? this.description,
+      icon: icon ?? this.icon,
       date: date ?? this.date);
   }
   
   Event copyWithModelFieldValues({
     ModelFieldValue<String>? title,
-    ModelFieldValue<String?>? description,
+    ModelFieldValue<int>? icon,
     ModelFieldValue<amplify_core.TemporalDateTime>? date
   }) {
     return Event._internal(
       id: id,
       title: title == null ? this.title : title.value,
-      description: description == null ? this.description : description.value,
+      icon: icon == null ? this.icon : icon.value,
       date: date == null ? this.date : date.value
     );
   }
@@ -151,19 +160,19 @@ class Event extends amplify_core.Model {
   Event.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _title = json['title'],
-      _description = json['description'],
+      _icon = (json['icon'] as num?)?.toInt(),
       _date = json['date'] != null ? amplify_core.TemporalDateTime.fromString(json['date']) : null,
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'title': _title, 'description': _description, 'date': _date?.format(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'title': _title, 'icon': _icon, 'date': _date?.format(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'title': _title,
-    'description': _description,
+    'icon': _icon,
     'date': _date,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
@@ -172,7 +181,7 @@ class Event extends amplify_core.Model {
   static final amplify_core.QueryModelIdentifier<EventModelIdentifier> MODEL_IDENTIFIER = amplify_core.QueryModelIdentifier<EventModelIdentifier>();
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final TITLE = amplify_core.QueryField(fieldName: "title");
-  static final DESCRIPTION = amplify_core.QueryField(fieldName: "description");
+  static final ICON = amplify_core.QueryField(fieldName: "icon");
   static final DATE = amplify_core.QueryField(fieldName: "date");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "Event";
@@ -201,9 +210,9 @@ class Event extends amplify_core.Model {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Event.DESCRIPTION,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+      key: Event.ICON,
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

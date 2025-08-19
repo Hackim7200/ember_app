@@ -61,17 +61,20 @@ class _TodaySectionState extends State<TodaySection> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () {
-          showModalBottomSheet(
+        onPressed: () async {
+          final newTodo = await showModalBottomSheet<Todo>(
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
             builder: (context) => AddTaskBottomSheet(
-              onAddTask: () {
-                _refreshTodos();
-              },
+              onAddTask:
+                  () {}, // optional: can be removed if you refactor the sheet
             ),
           );
+          if (!mounted) return;
+          if (newTodo != null) {
+            await _refreshTodos();
+          }
         },
       ),
       body: RefreshIndicator(
