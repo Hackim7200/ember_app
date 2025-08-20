@@ -4,14 +4,14 @@ import 'package:ember/features/event/widget/event_card.dart';
 import 'package:ember/models/ModelProvider.dart';
 import 'package:flutter/material.dart';
 
-class FutureSection extends StatefulWidget {
-  const FutureSection({super.key});
+class PastSection extends StatefulWidget {
+  const PastSection({super.key});
 
   @override
-  State<FutureSection> createState() => _FutureSectionState();
+  State<PastSection> createState() => _PastSectionState();
 }
 
-class _FutureSectionState extends State<FutureSection> {
+class _PastSectionState extends State<PastSection> {
   @override
   Widget build(BuildContext context) {
     final List<Event> futureEvents = [

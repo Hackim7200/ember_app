@@ -66,10 +66,7 @@ class _TodaySectionState extends State<TodaySection> {
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (context) => AddTaskBottomSheet(
-              onAddTask:
-                  () {}, // optional: can be removed if you refactor the sheet
-            ),
+            builder: (context) => AddTaskBottomSheet(),
           );
           if (!mounted) return;
           if (newTodo != null) {

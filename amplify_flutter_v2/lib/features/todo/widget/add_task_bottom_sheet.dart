@@ -4,9 +4,7 @@ import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
-  const AddTaskBottomSheet({super.key, required this.onAddTask});
-
-  final VoidCallback onAddTask;
+  const AddTaskBottomSheet({super.key});
 
   @override
   State<AddTaskBottomSheet> createState() => _AddTaskBottomSheetState();
@@ -26,7 +24,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
 
   void _addTask() async {
     final newTodo = Todo(
-      id: uuid(),
       content: _taskNameController.text,
       isDone: false,
       breakdown: _breakdownController.text,
@@ -217,7 +214,6 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   child: ElevatedButton(
                     onPressed: () {
                       _addTask();
-                      widget.onAddTask();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.colorScheme.primary,

@@ -1,3 +1,7 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:ember/core/app_icons.dart';
+import 'package:ember/models/ModelProvider.dart';
 import 'package:flutter/material.dart';
 
 class AddEventBottomSheet extends StatefulWidget {
@@ -12,16 +16,8 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
   final _descriptionController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
-  String _selectedIcon = 'calendar';
-
-  final List<Map<String, String>> _icons = [
-    {'icon': '📅', 'label': 'Calendar', 'value': 'calendar'},
-    {'icon': '🕐', 'label': 'Clock', 'value': 'clock'},
-    {'icon': '📍', 'label': 'Location', 'value': 'location'},
-    {'icon': '📝', 'label': 'Note', 'value': 'note'},
-    {'icon': '⭐', 'label': 'Star', 'value': 'star'},
-    {'icon': '👤', 'label': 'User', 'value': 'user'},
-  ];
+  int _selectedIcon = 0;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -37,6 +33,7 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
+
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
@@ -54,6 +51,85 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
         _selectedTime = picked;
       });
     }
+  }
+
+  Future<void> onAddEvent() async {
+    // Validate input
+    if (_eventNameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter an event name')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Combine date and time into a single DateTime
+      final eventDateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+        _selectedTime.hour,
+        _selectedTime.minute,
+      );
+
+      // Create the event with proper field mapping
+      final newEvent = Event(
+        title: _eventNameController.text.trim(),
+        date: TemporalDateTime(
+          eventDateTime,
+        ), // Use TemporalDateTime for Amplify
+        icon: _selectedIcon,
+      );
+
+      // Save to Amplify DataStore
+      final request = ModelMutations.create(newEvent);
+      final response = await Amplify.API.mutate(request: request).response;
+
+      if (response.hasErrors) {
+        safePrint('Creating Event failed: ${response.errors}');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to create event')),
+          );
+        }
+      } else {
+        safePrint('Creating Event successful');
+        if (mounted) {
+          Navigator.of(context).pop(response.data); // Return the created event
+        }
+      }
+    } catch (e) {
+      safePrint('Error creating event: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('An error occurred while creating the event'),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  bool get _isToday {
+    final now = DateTime.now();
+    return _selectedDate.year == now.year &&
+        _selectedDate.month == now.month &&
+        _selectedDate.day == now.day;
+  }
+
+  bool get _isCurrentTime {
+    final now = TimeOfDay.now();
+    return _selectedTime.hour == now.hour && _selectedTime.minute == now.minute;
   }
 
   @override
@@ -122,7 +198,7 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
               controller: _descriptionController,
               maxLines: 3,
               decoration: InputDecoration(
-                hintText: 'Description',
+                hintText: 'Description (optional)',
                 filled: true,
                 fillColor: theme.colorScheme.onSurface.withValues(alpha: 0.05),
                 border: OutlineInputBorder(
@@ -160,16 +236,11 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      _selectedDate.day == DateTime.now().day &&
-                              _selectedDate.month == DateTime.now().month &&
-                              _selectedDate.year == DateTime.now().year
-                          ? 'Date'
+                      _isToday
+                          ? 'Today'
                           : '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
                       style: TextStyle(
-                        color:
-                            _selectedDate.day == DateTime.now().day &&
-                                _selectedDate.month == DateTime.now().month &&
-                                _selectedDate.year == DateTime.now().year
+                        color: _isToday
                             ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
                             : theme.colorScheme.onSurface,
                       ),
@@ -203,14 +274,11 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
                     ),
                     const SizedBox(width: 12),
                     Text(
-                      _selectedTime.hour == TimeOfDay.now().hour &&
-                              _selectedTime.minute == TimeOfDay.now().minute
-                          ? 'Time'
+                      _isCurrentTime
+                          ? 'Select time'
                           : _selectedTime.format(context),
                       style: TextStyle(
-                        color:
-                            _selectedTime.hour == TimeOfDay.now().hour &&
-                                _selectedTime.minute == TimeOfDay.now().minute
+                        color: _isCurrentTime
                             ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
                             : theme.colorScheme.onSurface,
                       ),
@@ -235,73 +303,62 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 1.2,
-                  ),
-                  itemCount: _icons.length,
-                  itemBuilder: (context, index) {
-                    final icon = _icons[index];
-                    final isSelected = _selectedIcon == icon['value'];
+                SizedBox(
+                  height: 150,
+                  child: GridView.builder(
+                    shrinkWrap: true,
 
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          _selectedIcon = icon['value']!;
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? theme.colorScheme.primary.withValues(alpha: 0.1)
-                              : theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.05,
-                                ),
-                          borderRadius: BorderRadius.circular(12),
-                          border: isSelected
-                              ? Border.all(
-                                  color: theme.colorScheme.primary,
-                                  width: 2,
-                                )
-                              : null,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 1.2,
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              icon['icon']!,
-                              style: TextStyle(
-                                fontSize: 24,
+                    itemCount: AppIcons.all.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final IconData iconData = AppIcons.all[index];
+                      final bool isSelected = _selectedIcon == index;
+
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _selectedIcon = index;
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? theme.colorScheme.primary.withValues(
+                                    alpha: 0.1,
+                                  )
+                                : theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.05,
+                                  ),
+                            borderRadius: BorderRadius.circular(12),
+                            border: isSelected
+                                ? Border.all(
+                                    color: theme.colorScheme.primary,
+                                    width: 2,
+                                  )
+                                : null,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                iconData,
+                                size: 28,
                                 color: isSelected
                                     ? theme.colorScheme.primary
                                     : theme.colorScheme.onSurface,
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              icon['label']!,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: isSelected
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurface.withValues(
-                                        alpha: 0.7,
-                                      ),
-                                fontWeight: isSelected
-                                    ? FontWeight.w600
-                                    : FontWeight.normal,
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
@@ -314,7 +371,9 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: _isLoading
+                        ? null
+                        : () => Navigator.of(context).pop(),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       side: BorderSide(color: theme.colorScheme.primary),
@@ -334,17 +393,7 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      // Handle event creation here
-                      final eventData = {
-                        'name': _eventNameController.text,
-                        'description': _descriptionController.text,
-                        'date': _selectedDate,
-                        'time': _selectedTime,
-                        'icon': _selectedIcon,
-                      };
-                      Navigator.of(context).pop(eventData);
-                    },
+                    onPressed: _isLoading ? null : onAddEvent,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.colorScheme.primary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -352,13 +401,24 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(
-                      'Create Event',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: theme.colorScheme.onPrimary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    child: _isLoading
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                          )
+                        : Text(
+                            'Create Event',
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ),
                 ),
               ],
