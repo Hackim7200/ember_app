@@ -24,10 +24,15 @@ dependencies:
   amplify_authenticator: ^2.0.0
   amplify_api: ^2.0.0
 
+  flutter_riverpod: ^2.6.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^5.0.0 # Recommended lints
+  custom_lint:
+  riverpod_lint: ^2.6.5
 
 # See https://dart.dev/tools/pub/pubspec for details
 

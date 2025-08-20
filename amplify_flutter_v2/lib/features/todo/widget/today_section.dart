@@ -48,9 +48,13 @@ class _TodaySectionState extends State<TodaySection> {
         safePrint('errors: ${response.errors}');
         return;
       }
-      setState(() {
-        _todos = todos!.whereType<Todo>().toList();
-      });
+
+      // Check if widget is still mounted before calling setState
+      if (mounted) {
+        setState(() {
+          _todos = todos!.whereType<Todo>().toList();
+        });
+      }
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
     }
@@ -81,28 +85,34 @@ class _TodaySectionState extends State<TodaySection> {
           padding: const EdgeInsets.all(16.0),
           itemCount: _todos.length,
           onReorder: (oldIndex, newIndex) {
-            setState(() {
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
-              final item = _todos.removeAt(oldIndex);
-              _todos.insert(newIndex, item);
-            });
+            // Check if widget is still mounted before calling setState
+            if (mounted) {
+              setState(() {
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                }
+                final item = _todos.removeAt(oldIndex);
+                _todos.insert(newIndex, item);
+              });
+            }
           },
           itemBuilder: (context, index) {
             return TaskItem(
               key: ValueKey(_todos[index].id),
               todo: _todos[index],
               onTap: () {
-                setState(() {
-                  final currentTodo = _todos[index];
-                  final updatedTodo = Todo(
-                    id: currentTodo.id,
-                    content: currentTodo.content,
-                    isDone: !(currentTodo.isDone ?? false),
-                  );
-                  _todos[index] = updatedTodo;
-                });
+                // Check if widget is still mounted before calling setState
+                if (mounted) {
+                  setState(() {
+                    final currentTodo = _todos[index];
+                    final updatedTodo = Todo(
+                      id: currentTodo.id,
+                      content: currentTodo.content,
+                      isDone: !(currentTodo.isDone ?? false),
+                    );
+                    _todos[index] = updatedTodo;
+                  });
+                }
               },
             );
           },

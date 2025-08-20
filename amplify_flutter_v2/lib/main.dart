@@ -4,6 +4,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:ember/models/ModelProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:ember/app/app.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'amplify_outputs.dart';
 
@@ -13,7 +14,7 @@ Future<void> main() async {
 
     await _configureAmplify(); // configure Amplify
 
-    runApp(const App());
+    runApp(ProviderScope(child: const App()));
   } on AmplifyException catch (e) {
     runApp(Text("Error configuring Amplify: ${e.message}"));
   }
