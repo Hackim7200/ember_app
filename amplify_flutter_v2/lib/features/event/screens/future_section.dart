@@ -14,6 +14,7 @@ class FutureSection extends StatefulWidget {
 
 class _FutureSectionState extends State<FutureSection> {
   List<Event> _futureEvents = [];
+  bool _isDisposed = false;
 
   Future<void> _refreshEvent() async {
     try {
@@ -25,9 +26,13 @@ class _FutureSectionState extends State<FutureSection> {
         safePrint('errors: ${response.errors}');
         return;
       }
-      setState(() {
-        _futureEvents = events!.whereType<Event>().toList();
-      });
+
+      // Check if widget is still mounted before calling setState
+      if (!_isDisposed && mounted) {
+        setState(() {
+          _futureEvents = events!.whereType<Event>().toList();
+        });
+      }
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
     }
@@ -37,6 +42,12 @@ class _FutureSectionState extends State<FutureSection> {
   void initState() {
     super.initState();
     _refreshEvent();
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
   }
 
   @override

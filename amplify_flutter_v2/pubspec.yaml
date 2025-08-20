@@ -25,14 +25,19 @@ dependencies:
   amplify_api: ^2.0.0
 
   flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^5.0.0 # Recommended lints
+
+  # riverpod
   custom_lint:
   riverpod_lint: ^2.6.5
+  riverpod_generator: ^2.3.0
+  build_runner: ^2.4.0
 
 # See https://dart.dev/tools/pub/pubspec for details
 

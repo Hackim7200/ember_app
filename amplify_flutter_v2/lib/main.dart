@@ -17,7 +17,9 @@ Future<void> main() async {
 
     runApp(ProviderScope(child: const App()));
   } on AmplifyException catch (e) {
-    runApp(Text("Error configuring Amplify: ${e.message}"));
+    runApp(
+      ProviderScope(child: Text("Error configuring Amplify: ${e.message}")),
+    );
   }
 }
 
