@@ -41,7 +41,6 @@ class _FutureSectionState extends State<FutureSection> {
 
   @override
   Widget build(BuildContext context) {
-  
     return ListView.builder(
       itemCount:
           _futureEvents.length, // Number of items to display in the list.
