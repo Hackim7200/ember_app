@@ -22,6 +22,23 @@ class EventService {
     }
   }
 
+
+  // List all past events (events with date before now) using predicate
+  static Future<List<Event>> getAllPastEvents() async {
+    try {
+      final DateTime now = DateTime.now().toUtc();
+      final request = ModelQueries.list(
+        Event.classType,
+        where: Event.DATE.lt(now.toIso8601String()),
+      );
+      final response = await Amplify.API.query(request: request).response;
+      return response.data?.items.whereType<Event>().toList() ?? [];
+    } on ApiException catch (e) {
+      safePrint('List past events failed: $e');
+      return [];
+    }
+  }
+
   // List all events
   static Future<List<Event>> getAll() async {
     try {

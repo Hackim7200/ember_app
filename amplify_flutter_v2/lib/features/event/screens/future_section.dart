@@ -21,16 +21,13 @@ class _FutureSectionState extends State<FutureSection> {
 
   Future<void> _refreshEvent() async {
     try {
-      final Event? event = await EventService.getById(
-        'b69c1ad3-734f-47f9-93f0-30a0ae7d75b3',
-      );
-      final List<Event> events = [];
-      if (event != null) {
-        events.add(event);
-      }
+      final List<Event?> event = await EventService.getAllPastEvents();
+
+      final List<Event?> events = event;
+
       if (!_isDisposed && mounted) {
         setState(() {
-          _futureEvents = events;
+          _futureEvents = events.whereType<Event>().toList();
         });
       }
     } on ApiException catch (e) {
