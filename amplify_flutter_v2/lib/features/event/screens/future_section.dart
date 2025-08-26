@@ -1,6 +1,9 @@
+import 'dart:math' as developer;
+
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:ember/core/app_icons.dart';
+import 'package:ember/features/event/services/event_service.dart';
 import 'package:ember/features/event/widget/event_card.dart';
 import 'package:ember/models/ModelProvider.dart';
 import 'package:flutter/material.dart';
@@ -18,19 +21,16 @@ class _FutureSectionState extends State<FutureSection> {
 
   Future<void> _refreshEvent() async {
     try {
-      final request = ModelQueries.list(Event.classType);
-      final response = await Amplify.API.query(request: request).response;
-
-      final events = response.data?.items;
-      if (response.hasErrors) {
-        safePrint('errors: ${response.errors}');
-        return;
+      final Event? event = await EventService.getById(
+        'b69c1ad3-734f-47f9-93f0-30a0ae7d75b3',
+      );
+      final List<Event> events = [];
+      if (event != null) {
+        events.add(event);
       }
-
-      // Check if widget is still mounted before calling setState
       if (!_isDisposed && mounted) {
         setState(() {
-          _futureEvents = events!.whereType<Event>().toList();
+          _futureEvents = events;
         });
       }
     } on ApiException catch (e) {
@@ -61,6 +61,7 @@ class _FutureSectionState extends State<FutureSection> {
           icon: AppIcons.all[_futureEvents[index].icon],
           title: _futureEvents[index].title,
           dateTime: _futureEvents[index].date.getDateTimeInUtc().toLocal(),
+          id: _futureEvents[index].id,
         );
       },
     );

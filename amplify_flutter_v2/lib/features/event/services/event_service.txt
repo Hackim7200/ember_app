@@ -1,0 +1,22 @@
+import 'package:amplify_api/amplify_api.dart';
+import 'package:amplify_flutter/amplify_flutter.dart' as amplify_flutter;
+import 'package:ember/models/Event.dart';
+
+/// Queries a single Event item by its identifier.
+/// Returns the Event if found, otherwise null.
+Future<Event?> queryEventById({required Event event}) async {
+  try {
+    final request = ModelQueries.get(Event.classType, event.modelIdentifier);
+    final response = await amplify_flutter.Amplify.API
+        .query(request: request)
+        .response;
+    final queriedEvent = response.data;
+    if (queriedEvent == null) {
+      amplify_flutter.safePrint('Query returned null. Errors: ${response.errors}');
+    }
+    return queriedEvent;
+  } on ApiException catch (e) {
+    amplify_flutter.safePrint('Query failed: $e');
+    return null;
+  }
+}

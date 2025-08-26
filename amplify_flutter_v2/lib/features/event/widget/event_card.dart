@@ -4,12 +4,13 @@ class EventCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final DateTime dateTime;
-
+  final String id;
   const EventCard({
     super.key,
     required this.icon,
     required this.title,
     required this.dateTime,
+    required this.id,
   });
 
   @override
@@ -34,7 +35,7 @@ class EventCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  title + id,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

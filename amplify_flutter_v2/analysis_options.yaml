@@ -7,4 +7,4 @@ analyzer:
 linter:
   rules:
     # Riverpod specific rules
-    avoid_manual_providers_as_generated_provider_dependency: true
+
