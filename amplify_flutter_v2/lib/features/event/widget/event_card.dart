@@ -1,17 +1,11 @@
+import 'package:ember/core/app_icons.dart';
+import 'package:ember/models/Event.dart';
 import 'package:flutter/material.dart';
 
 class EventCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final DateTime dateTime;
-  final String id;
-  const EventCard({
-    super.key,
-    required this.icon,
-    required this.title,
-    required this.dateTime,
-    required this.id,
-  });
+  final Event event;
+
+  const EventCard({super.key, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +21,11 @@ class EventCard extends StatelessWidget {
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: Colors.black87, size: 24),
+            child: Icon(
+              AppIcons.all[event.icon],
+              color: Colors.black87,
+              size: 24,
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -35,7 +33,7 @@ class EventCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title + id,
+                  event.title,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -61,7 +59,7 @@ class EventCard extends StatelessWidget {
 
   String _getTimeDifferenceText() {
     final DateTime now = DateTime.now();
-    final DateTime eventDate = dateTime;
+    final DateTime eventDate = event.date.getDateTimeInUtc().toLocal();
     final Duration difference = eventDate.difference(now);
 
     if (difference.isNegative) {

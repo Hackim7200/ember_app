@@ -1,66 +1,33 @@
-import 'dart:math' as developer;
+import 'package:ember/features/event/provider/event_provider.dart';
 
-import 'package:amplify_api/amplify_api.dart';
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:ember/core/app_icons.dart';
-import 'package:ember/features/event/services/event_service.dart';
 import 'package:ember/features/event/widget/event_card.dart';
-import 'package:ember/models/ModelProvider.dart';
-import 'package:flutter/material.dart';
 
-class FutureSection extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class FutureSection extends ConsumerStatefulWidget {
   const FutureSection({super.key});
 
   @override
-  State<FutureSection> createState() => _FutureSectionState();
+  ConsumerState<FutureSection> createState() => _FutureSectionState();
 }
 
-class _FutureSectionState extends State<FutureSection> {
-  List<Event> _futureEvents = [];
-  bool _isDisposed = false;
-
-  Future<void> _refreshEvent() async {
-    try {
-      final List<Event?> event = await EventService.getAllPastEvents();
-
-      final List<Event?> events = event;
-
-      if (!_isDisposed && mounted) {
-        setState(() {
-          _futureEvents = events.whereType<Event>().toList();
-        });
-      }
-    } on ApiException catch (e) {
-      safePrint('Query failed: $e');
-    }
-  }
-
+class _FutureSectionState extends ConsumerState<FutureSection> {
   @override
   void initState() {
     super.initState();
-    _refreshEvent();
-  }
-
-  @override
-  void dispose() {
-    _isDisposed = true;
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount:
-          _futureEvents.length, // Number of items to display in the list.
-      // Builds each item in the list dynamically based on the index.
-      itemBuilder: (BuildContext context, int index) {
-        return EventCard(
-          icon: AppIcons.all[_futureEvents[index].icon],
-          title: _futureEvents[index].title,
-          dateTime: _futureEvents[index].date.getDateTimeInUtc().toLocal(),
-          id: _futureEvents[index].id,
-        );
-      },
+    final events = ref.watch(futureEventsProvider);
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(eventNotifierProvider.notifier).refresh(),
+      child: ListView.builder(
+        itemCount: events.length,
+        itemBuilder: (_, index) => EventCard(event: events[index]),
+      ),
     );
   }
 }

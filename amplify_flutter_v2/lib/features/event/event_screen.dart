@@ -13,14 +13,12 @@ class EventScreen extends StatefulWidget {
 }
 
 class _EventScreenState extends State<EventScreen> {
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2, // Fixed: Changed from 3 to 2 to match the number of tabs
       child: Scaffold(
         appBar: AppBar(title: Text("Event"), centerTitle: true),
-
 
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
@@ -40,9 +38,6 @@ class _EventScreenState extends State<EventScreen> {
             }
           },
         ),
-
-
-        
 
         body: Column(
           children: [

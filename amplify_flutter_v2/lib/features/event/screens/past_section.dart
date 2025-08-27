@@ -1,54 +1,58 @@
-// lib/pages/counter_page.dart
-import 'package:ember/features/event/provider/counter_provider.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:ember/core/app_icons.dart';
+import 'package:ember/features/event/services/event_service.dart'
+    show EventService;
+
+import 'package:ember/features/event/widget/event_card.dart';
+import 'package:ember/models/ModelProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
-class PastSection extends ConsumerWidget {
+class PastSection extends StatefulWidget {
   const PastSection({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the counter value
-    final counter = ref.watch(counterProvider);
-    
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Riverpod Counter'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Counter Value:',
-              style: TextStyle(fontSize: 18),
-            ),
-            Text(
-              '$counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () => ref.read(counterProvider.notifier).decrement(),
-                  child: const Icon(Icons.remove),
-                ),
-                ElevatedButton(
-                  onPressed: () => ref.read(counterProvider.notifier).reset(),
-                  child: const Icon(Icons.refresh),
-                ),
-                ElevatedButton(
-                  onPressed: () => ref.read(counterProvider.notifier).increment(),
-                  child: const Icon(Icons.add),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+  State<PastSection> createState() => _PastSectionState();
+}
+
+class _PastSectionState extends State<PastSection> {
+  List<Event> _futureEvents = [];
+  bool _isDisposed = false;
+
+  Future<void> _refreshEvent() async {
+    try {
+      final List<Event?> events = await EventService.getAllPastEvents();
+
+      if (!_isDisposed && mounted) {
+        setState(() {
+          _futureEvents = events.whereType<Event>().toList();
+        });
+      }
+    } on ApiException catch (e) {
+      safePrint('Query failed: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshEvent();
+  }
+
+  @override
+  void dispose() {
+    _isDisposed = true;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount:
+          _futureEvents.length, // Number of items to display in the list.
+      // Builds each item in the list dynamically based on the index.
+      itemBuilder: (BuildContext context, int index) {
+        return EventCard(event: _futureEvents[index]);
+      },
     );
   }
 }
