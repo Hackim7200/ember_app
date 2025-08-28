@@ -1,5 +1,5 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:ember/core/app_icons.dart';
+
 import 'package:ember/features/event/services/event_service.dart'
     show EventService;
 
