@@ -6,9 +6,10 @@ part of 'event_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$futureEventsHash() => r'e8827d1779eb793fd7fc02d2086f62402222d8d2';
+String _$futureEventsHash() => r'c18e7a1f0ea515f991d335c690b7789960289ceb';
 
-/// Derived provider: future events
+/// ===== Derived Providers =====
+/// Only upcoming (future) events
 ///
 /// Copied from [futureEvents].
 @ProviderFor(futureEvents)
@@ -25,9 +26,9 @@ final futureEventsProvider = AutoDisposeProvider<List<Event>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef FutureEventsRef = AutoDisposeProviderRef<List<Event>>;
-String _$eventNotifierHash() => r'2f00a60843a3b1e7840e9d8e2da2e3992c4fec9b';
+String _$eventNotifierHash() => r'05b64227e76f0af4abfc99c87d5c2f64ce20db6a';
 
-/// Base provider managing all events
+/// Notifier managing all events with optimistic updates
 ///
 /// Copied from [EventNotifier].
 @ProviderFor(EventNotifier)

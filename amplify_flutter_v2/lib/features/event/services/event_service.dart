@@ -64,28 +64,20 @@ class EventService {
     }
   }
 
-  // // Create new event
-  // static Future<Event?> create({
-  //   required String title,
-  //   String? description,
-  // }) async {
-  //   try {
-  //     final event = Event(
-  //       icon: 'icon',
-  //       title: title,
-  //       date: DateTime.now(),
-  //     );
+  // Create new event
+  static Future<Event?> create(Event event) async {
+    try {
 
-  //     final request = ModelMutations.create(event);
-  //     final response = await Amplify.API.mutate(request: request).response;
+      final request = ModelMutations.create(event);
+      final response = await Amplify.API.mutate(request: request).response;
 
-  //     return response.data;
+      return response.data;
 
-  //   } on ApiException catch (e) {
-  //     safePrint('Create event failed: $e');
-  //     return null;
-  //   }
-  // }
+    } on ApiException catch (e) {
+      safePrint('Create event failed: $e');
+      return null;
+    }
+  }
 
   // Update event
   static Future<Event?> update(Event event) async {
