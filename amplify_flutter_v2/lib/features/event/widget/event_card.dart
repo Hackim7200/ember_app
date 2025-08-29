@@ -62,23 +62,34 @@ class EventCard extends StatelessWidget {
     final DateTime eventDate = event.date.getDateTimeInUtc().toLocal();
     final Duration difference = eventDate.difference(now);
 
-    if (difference.isNegative) {
-      return 'Event passed';
-    }
     final int days = difference.inDays;
     final int hours = difference.inHours % 24;
     final int minutes = difference.inMinutes % 60;
 
-    if (days > 1) {
-      return '$days days';
-    } else if (days == 1) {
-      return '1 day $hours hours';
-    } else if (hours > 0) {
-      return '$hours hours $minutes minutes';
-    } else if (minutes > 0) {
-      return '$minutes minutes';
+    if (difference.isNegative) {
+      if (days.abs() > 1) {
+        return '${days.abs()} days ago';
+      } else if (days.abs() == 1) {
+        return '1 day ${hours.abs()} hours ago';
+      } else if (hours.abs() > 0) {
+        return '${hours.abs()} hours ${minutes.abs()} minutes ago';
+      } else if (minutes.abs() > 0) {
+        return '${minutes.abs()} minutes ago';
+      } else {
+        return 'Less than a minute ago';
+      }
     } else {
-      return 'Less than a minute';
+      if (days > 1) {
+        return '$days days';
+      } else if (days == 1) {
+        return '1 day $hours hours';
+      } else if (hours > 0) {
+        return '$hours hours $minutes minutes';
+      } else if (minutes > 0) {
+        return '$minutes minutes';
+      } else {
+        return 'Less than a minute';
+      }
     }
   }
 }

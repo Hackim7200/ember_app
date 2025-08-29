@@ -1,58 +1,64 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
-
-import 'package:ember/features/event/services/event_service.dart'
-    show EventService;
-
+import 'package:ember/features/event/provider/event_provider.dart';
 import 'package:ember/features/event/widget/event_card.dart';
-import 'package:ember/models/ModelProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PastSection extends StatefulWidget {
+class PastSection extends ConsumerWidget {
   const PastSection({super.key});
 
   @override
-  State<PastSection> createState() => _PastSectionState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final eventsAsync = ref.watch(eventNotifierProvider);
 
-class _PastSectionState extends State<PastSection> {
-  List<Event> _futureEvents = [];
-  bool _isDisposed = false;
+    return RefreshIndicator(
+      onRefresh: () => ref.read(eventNotifierProvider.notifier).refresh(),
+      child: eventsAsync.when(
+        data: (_) {
+          // Watch the derived pastEventsProvider
+          final pastEvents = ref.watch(pastEventsProvider);
 
-  Future<void> _refreshEvent() async {
-    try {
-      final List<Event?> events = await EventService.getAllPastEvents();
+          if (pastEvents.isEmpty) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.history, size: 64, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text('No past events', style: TextStyle(fontSize: 18)),
+                  Text(
+                    'Pull down to refresh',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+            );
+          }
 
-      if (!_isDisposed && mounted) {
-        setState(() {
-          _futureEvents = events.whereType<Event>().toList();
-        });
-      }
-    } on ApiException catch (e) {
-      safePrint('Query failed: $e');
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshEvent();
-  }
-
-  @override
-  void dispose() {
-    _isDisposed = true;
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount:
-          _futureEvents.length, // Number of items to display in the list.
-      // Builds each item in the list dynamically based on the index.
-      itemBuilder: (BuildContext context, int index) {
-        return EventCard(event: _futureEvents[index]);
-      },
+          return ListView.builder(
+            itemCount: pastEvents.length,
+            itemBuilder: (context, index) {
+              final event = pastEvents[index];
+              return EventCard(key: ValueKey(event.id), event: event);
+            },
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.error_outline, size: 64, color: Colors.red),
+              const SizedBox(height: 16),
+              const Text('Failed to load events'),
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () => ref.refresh(eventNotifierProvider),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

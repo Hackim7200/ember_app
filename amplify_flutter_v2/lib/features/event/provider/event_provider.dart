@@ -5,28 +5,34 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'event_provider.g.dart';
 
-// SOLUTION: Add keepAlive to prevent data from being disposed
-@Riverpod(keepAlive: true) // This keeps the data alive between tab switches
+//Notifier providers
+//Notifier providers stores the state of the data
+//Can mutate the state
+//
+
+@riverpod
 class EventNotifier extends _$EventNotifier {
   @override
-  Future<List<Event>> build() => EventService.getAll();
+  Future<List<Event>> build() async {
+    // Keep data alive
+    ref.keepAlive();
+
+    // Fetch initial data
+    return EventService.getAll();
+  }
 
   // Simple optimistic updates - UI responds instantly
 
   Future<void> addEvent(Event event) async {
     final current = state.valueOrNull ?? [];
 
-    // Show immediately in UI
-    state = AsyncData([...current, event]);
-
-    // Save to server in background
     try {
       final saved = await EventService.create(event);
-      // Update with server version
-      state = AsyncData([...current, saved!]);
+      if (saved != null) {
+        state = AsyncData([...current, saved]);
+      }
     } catch (e) {
-      // Remove from UI if save failed
-      state = AsyncData(current);
+      // Keep current state, handle error appropriately
       rethrow;
     }
   }
@@ -47,14 +53,12 @@ class EventNotifier extends _$EventNotifier {
     state = AsyncData(updated);
 
     // Save to server
-    try {
-      final saved = await EventService.update(event);
-      updated[index] = saved!;
+    final saved = await EventService.update(event);
+    if (saved != null) {
+      updated[index] = saved;
       state = AsyncData(updated);
-    } catch (e) {
-      // Revert on error
-      state = AsyncData(current);
-      rethrow;
+    } else {
+      state = AsyncData(current); // fallback
     }
   }
 
@@ -76,6 +80,29 @@ class EventNotifier extends _$EventNotifier {
   }
 
   Future<void> refresh() async {
-    state = await AsyncValue.guard(() => EventService.getAll());
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(EventService.getAll);
   }
 }
+
+//Derived providers
+//Derived providers are providers that are computed based on the value of other providers.
+//They are not stored in the state, but are computed on the fly.
+//Cannot mutate — returns a computed value only
+//Computes/filter/transforms data from other providers
+
+// Derived provider: future events
+
+final futureEventsProvider = Provider<List<Event>>((ref) {
+  final events = ref.watch(eventNotifierProvider).valueOrNull ?? [];
+  final now = DateTime.now();
+  return events.where((e) => e.date.getDateTimeInUtc().isAfter(now)).toList();
+});
+
+// Derived provider: past events
+
+final pastEventsProvider = Provider<List<Event>>((ref) {
+  final events = ref.watch(eventNotifierProvider).valueOrNull ?? [];
+  final now = DateTime.now();
+  return events.where((e) => e.date.getDateTimeInUtc().isBefore(now)).toList();
+});

@@ -1,17 +1,20 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:ember/core/app_icons.dart';
+import 'package:ember/features/event/provider/event_provider.dart';
 import 'package:ember/models/ModelProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Add this import
 
-class AddEventBottomSheet extends StatefulWidget {
+class AddEventBottomSheet extends ConsumerStatefulWidget {
   const AddEventBottomSheet({super.key});
 
   @override
-  State<AddEventBottomSheet> createState() => _AddEventBottomSheetState();
+  ConsumerState<AddEventBottomSheet> createState() =>
+      _AddEventBottomSheetState();
 }
 
-class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
+class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
   final _eventNameController = TextEditingController();
   final _descriptionController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
@@ -30,8 +33,11 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      // Allow 1 year in the past
       lastDate: DateTime.now().add(const Duration(days: 365)),
+
+      // Allow 1 year in the future
     );
 
     if (picked != null && picked != _selectedDate) {
@@ -79,35 +85,30 @@ class _AddEventBottomSheetState extends State<AddEventBottomSheet> {
       // Create the event with proper field mapping
       final newEvent = Event(
         title: _eventNameController.text.trim(),
-        date: TemporalDateTime(
-          eventDateTime,
-        ), // Use TemporalDateTime for Amplify
+        // description: _descriptionController.text.trim().isNotEmpty
+        //     ? _descriptionController.text.trim()
+        //     : null, // Add description if provided
+        date: TemporalDateTime(eventDateTime),
         icon: _selectedIcon,
       );
 
-      // Save to Amplify DataStore
-      final request = ModelMutations.create(newEvent);
-      final response = await Amplify.API.mutate(request: request).response;
+      // Use the provider to add the event
+      await ref.read(eventNotifierProvider.notifier).addEvent(newEvent);
 
-      if (response.hasErrors) {
-        safePrint('Creating Event failed: ${response.errors}');
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to create event')),
-          );
-        }
-      } else {
-        safePrint('Creating Event successful');
-        if (mounted) {
-          Navigator.of(context).pop(response.data); // Return the created event
-        }
+      // If we get here, the event was added successfully
+      if (mounted) {
+        Navigator.of(context).pop(newEvent); // Return the created event
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Event created successfully')),
+        );
       }
     } catch (e) {
       safePrint('Error creating event: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('An error occurred while creating the event'),
+          SnackBar(
+            content: Text('Failed to create event: ${e.toString()}'),
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }

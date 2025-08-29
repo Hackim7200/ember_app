@@ -13,17 +13,18 @@ class FutureSection extends ConsumerWidget {
     return RefreshIndicator(
       onRefresh: () => ref.read(eventNotifierProvider.notifier).refresh(),
       child: eventsAsync.when(
-        // Show events when loaded
-        data: (events) {
-          // Handle empty state
-          if (events.isEmpty) {
+        data: (_) {
+          // Watch the derived futureEventsProvider
+          final futureEvents = ref.watch(futureEventsProvider);
+
+          if (futureEvents.isEmpty) {
             return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.event_note, size: 64, color: Colors.grey),
                   SizedBox(height: 16),
-                  Text('No events yet', style: TextStyle(fontSize: 18)),
+                  Text('No upcoming events', style: TextStyle(fontSize: 18)),
                   Text(
                     'Pull down to refresh',
                     style: TextStyle(color: Colors.grey),
@@ -33,24 +34,15 @@ class FutureSection extends ConsumerWidget {
             );
           }
 
-          // Show events list
           return ListView.builder(
-            itemCount: events.length,
+            itemCount: futureEvents.length,
             itemBuilder: (context, index) {
-              return EventCard(
-                key: ValueKey(
-                  events[index].id,
-                ), // Add key for better performance
-                event: events[index],
-              );
+              final event = futureEvents[index];
+              return EventCard(key: ValueKey(event.id), event: event);
             },
           );
         },
-
-        // Show loading spinner
         loading: () => const Center(child: CircularProgressIndicator()),
-
-        // Show error with retry option
         error: (error, stackTrace) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
