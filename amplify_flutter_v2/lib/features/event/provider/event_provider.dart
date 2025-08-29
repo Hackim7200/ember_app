@@ -15,7 +15,7 @@ class EventNotifier extends _$EventNotifier {
   @override
   Future<List<Event>> build() async {
     // Keep data alive
-    ref.keepAlive();
+    // ref.keepAlive();
 
     // Fetch initial data
     return EventService.getAll();
