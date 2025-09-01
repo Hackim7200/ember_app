@@ -10,10 +10,11 @@ const schema = a.schema({
 
   Todo: a
     .model({
-      content: a.string(),
-      isDone: a.boolean(),
+      content: a.string().required(),
+      isDone: a.boolean().required(),
       pomodoros: a.integer().default(1),
       breakdown: a.string(),
+      date: a.datetime().required(),
     })
     .authorization((allow) => [allow.owner()]),
 

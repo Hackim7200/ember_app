@@ -16,12 +16,19 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
   final _taskNameController = TextEditingController();
   final _breakdownController = TextEditingController();
   double _pomodoros = 1.0;
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void dispose() {
     _taskNameController.dispose();
     _breakdownController.dispose();
     super.dispose();
+  }
+
+  void _selectDate(DateTime date) {
+    setState(() {
+      _selectedDate = date;
+    });
   }
 
   void _addTask() async {
@@ -42,6 +49,7 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
         isDone: false,
         breakdown: _breakdownController.text.trim(),
         pomodoros: _pomodoros.toInt(),
+        date: TemporalDateTime(_selectedDate),
       );
 
       // Use the provider to add the todo
@@ -64,6 +72,21 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
           ),
         );
       }
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final selectedDate = DateTime(date.year, date.month, date.day);
+
+    if (selectedDate.isAtSameMomentAs(today)) {
+      return 'Today';
+    } else if (selectedDate.isAtSameMomentAs(tomorrow)) {
+      return 'Tomorrow';
+    } else {
+      return '${date.day}/${date.month}/${date.year}';
     }
   }
 
@@ -145,6 +168,47 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
                   vertical: 16,
                 ),
               ),
+            ),
+          ),
+
+          // Date selection section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Due Date',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 12),
+
+                // Quick date options
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildDateOption(
+                        theme,
+                        'Today',
+                        DateTime.now(),
+                        _selectedDate,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: _buildDateOption(
+                        theme,
+                        'Tomorrow',
+                        DateTime.now().add(const Duration(days: 1)),
+                        _selectedDate,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
 
@@ -263,6 +327,47 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
           // Bottom safe area
           SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDateOption(
+    ThemeData theme,
+    String label,
+    DateTime date,
+    DateTime selectedDate,
+  ) {
+    final isSelected =
+        DateTime(date.year, date.month, date.day) ==
+        DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+    return InkWell(
+      onTap: () => _selectDate(date),
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? theme.colorScheme.primary.withValues(alpha: 0.1)
+              : theme.colorScheme.onSurface.withValues(alpha: 0.05),
+          border: Border.all(
+            color: isSelected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.outline.withValues(alpha: 0.3),
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text(
+          label,
+          textAlign: TextAlign.center,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: isSelected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurface,
+            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
       ),
     );
   }

@@ -1,10 +1,12 @@
+
 import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
 
-class TodoCard extends StatelessWidget {
+class TaskCard extends StatelessWidget {
   final Todo todo;
+  final VoidCallback onTap;
 
-  const TodoCard({super.key, required this.todo});
+  const TaskCard({super.key, required this.todo, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class TodoCard extends StatelessWidget {
         shadowColor: Colors.grey.withAlpha(26),
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-
+          onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
@@ -31,13 +33,13 @@ class TodoCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              todo.content,
+                              todo.content ?? '',
                               style: TextStyle(
                                 fontSize: 16,
-                                decoration: todo.isDone
+                                decoration: todo.isDone == true
                                     ? TextDecoration.lineThrough
                                     : null,
-                                color: todo.isDone
+                                color: todo.isDone == true
                                     ? Colors.grey[600]
                                     : Colors.black87,
                               ),
@@ -45,7 +47,7 @@ class TodoCard extends StatelessWidget {
                           ),
                           Row(
                             children: List.generate(
-                              todo.pomodoros ?? 1,
+                              todo.pomodoros ?? 0,
                               (int i) => Padding(
                                 padding: const EdgeInsets.only(left: 5.0),
                                 child: Container(
@@ -61,9 +63,22 @@ class TodoCard extends StatelessWidget {
                           ),
                         ],
                       ),
+
+                      // if (todo.breakdown != null && todo.breakdown!.isNotEmpty)
+                      //   Padding(
+                      //     padding: const EdgeInsets.only(top: 4),
+                      //     child: Text(
+                      //       todo.breakdown!,
+                      //       style: TextStyle(
+                      //         fontSize: 13,
+                      //         color: Colors.grey[700],
+                      //       ),
+                      //     ),
+                      //   ),
                     ],
                   ),
                 ),
+                // customCheckbox(context, todo.isDone ?? false),
               ],
             ),
           ),

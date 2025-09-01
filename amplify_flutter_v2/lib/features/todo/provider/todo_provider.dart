@@ -1,6 +1,7 @@
 import 'package:ember/features/todo/services/todo_service.dart';
 import 'package:ember/models/Todo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 
 part 'todo_provider.g.dart';
 
@@ -82,3 +83,54 @@ class TodoNotifier extends _$TodoNotifier {
     state = await AsyncValue.guard(TodoService.getAll);
   }
 }
+
+//Derived providers
+//Derived providers are providers that are computed based on the value of other providers.
+//They are not stored in the state, but are computed on the fly.
+//Cannot mutate — returns a computed value only
+//Computes/filter/transforms data from other providers
+
+final todayTaskProvider = Provider<List<Todo>>((ref) {
+  final List<Todo> todos = ref.watch(todoNotifierProvider).valueOrNull ?? [];
+
+  final DateTime now = DateTime.now();
+  final DateTime todayStart = DateTime(now.year, now.month, now.day, 0, 0, 0);
+  final DateTime todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+
+  final List<Todo> todayTodos = todos.where((Todo todo) {
+    final TemporalDateTime? temporalDate = todo.date;
+    if (temporalDate == null) {
+      return false;
+    }
+    final DateTime todoDate = temporalDate.getDateTimeInUtc().toLocal();
+    return todoDate.isAfter(todayStart.subtract(const Duration(seconds: 1))) &&
+        todoDate.isBefore(todayEnd.add(const Duration(seconds: 1)));
+  }).toList();
+
+  safePrint('Today provider - Filtered todos: ${todayTodos.length}');
+
+  return todayTodos;
+});
+
+// Derived provider: tomorrow tasks
+final tomorrowTaskProvider = Provider<List<Todo>>((ref) {
+  final List<Todo> todos = ref.watch(todoNotifierProvider).valueOrNull ?? [];
+
+  final DateTime now = DateTime.now();
+  final DateTime todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
+  final DateTime tomorrowEnd = todayEnd.add(const Duration(days: 1));
+
+  final List<Todo> tomorrowTodos = todos.where((Todo todo) {
+    final TemporalDateTime? temporalDate = todo.date;
+    if (temporalDate == null) {
+      return false;
+    }
+    final DateTime todoDate = temporalDate.getDateTimeInUtc().toLocal();
+    return todoDate.isAfter(todayEnd) &&
+        todoDate.isBefore(tomorrowEnd.add(const Duration(seconds: 1)));
+  }).toList();
+
+  safePrint('Tomorrow provider - Filtered todos: ${tomorrowTodos.length}');
+
+  return tomorrowTodos;
+});
