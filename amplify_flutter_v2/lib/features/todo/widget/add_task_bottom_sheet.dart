@@ -1,16 +1,18 @@
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:ember/features/todo/provider/todo_provider.dart';
+
 import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AddTaskBottomSheet extends StatefulWidget {
+class AddTaskBottomSheet extends ConsumerStatefulWidget {
   const AddTaskBottomSheet({super.key});
 
   @override
-  State<AddTaskBottomSheet> createState() => _AddTaskBottomSheetState();
+  ConsumerState<AddTaskBottomSheet> createState() => _AddTaskBottomSheetState();
 }
 
-class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
+class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
   final _taskNameController = TextEditingController();
   final _breakdownController = TextEditingController();
   double _pomodoros = 1.0;
@@ -23,20 +25,45 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   }
 
   void _addTask() async {
-    final newTodo = Todo(
-      content: _taskNameController.text,
-      isDone: false,
-      breakdown: _breakdownController.text,
-    );
-    final request = ModelMutations.create(newTodo);
-    final response = await Amplify.API.mutate(request: request).response;
-    if (response.hasErrors) {
-      safePrint('Creating Todo failed.');
-    } else {
-      safePrint('Creating Todo successful.');
+    // Validate input
+    if (_taskNameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a task name'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
     }
-    if (mounted) {
-      Navigator.of(context).pop(newTodo);
+
+    try {
+      final newTodo = Todo(
+        content: _taskNameController.text.trim(),
+        isDone: false,
+        breakdown: _breakdownController.text.trim(),
+        pomodoros: _pomodoros.toInt(),
+      );
+
+      // Use the provider to add the todo
+      await ref.read(todoNotifierProvider.notifier).addTodo(newTodo);
+
+      // If we get here, the todo was added successfully
+      if (mounted) {
+        Navigator.of(context).pop(newTodo); // Return the created todo
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Task created successfully')),
+        );
+      }
+    } catch (e) {
+      safePrint('Error creating task: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create task: ${e.toString()}'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
     }
   }
 
@@ -212,9 +239,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      _addTask();
-                    },
+                    onPressed: _addTask,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: theme.colorScheme.primary,
                       padding: const EdgeInsets.symmetric(vertical: 16),

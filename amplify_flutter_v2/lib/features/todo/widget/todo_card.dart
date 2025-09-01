@@ -1,12 +1,11 @@
-import 'package:ember/features/todo/widget/custom_checkbox.dart';
 import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
 
-class TaskItem extends StatelessWidget {
+class TodoCard extends StatelessWidget {
   final Todo todo;
   final VoidCallback onTap;
 
-  const TaskItem({super.key, required this.todo, required this.onTap});
+  const TodoCard({super.key, required this.todo, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -45,44 +44,40 @@ class TaskItem extends StatelessWidget {
                               ),
                             ),
                           ),
-                          if (todo.pomodoros != null && todo.pomodoros! > 0)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Row(
-                                children: [
-                                  const Text(
-                                    '🍅',
-                                    style: TextStyle(fontSize: 16),
+                          Row(
+                            children: List.generate(
+                              todo.pomodoros ?? 0,
+                              (int i) => Padding(
+                                padding: const EdgeInsets.only(left: 5.0),
+                                child: Container(
+                                  width: 18,
+                                  height: 18,
+                                  decoration: const BoxDecoration(
+                                    color: Color.fromARGB(255, 251, 160, 160),
+                                    shape: BoxShape.circle,
                                   ),
-                                  const SizedBox(width: 2),
-                                  Text(
-                                    '${todo.pomodoros}',
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.redAccent,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
+                          ),
                         ],
                       ),
-                      if (todo.breakdown != null && todo.breakdown!.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            todo.breakdown!,
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey[700],
-                            ),
-                          ),
-                        ),
+
+                      // if (todo.breakdown != null && todo.breakdown!.isNotEmpty)
+                      //   Padding(
+                      //     padding: const EdgeInsets.only(top: 4),
+                      //     child: Text(
+                      //       todo.breakdown!,
+                      //       style: TextStyle(
+                      //         fontSize: 13,
+                      //         color: Colors.grey[700],
+                      //       ),
+                      //     ),
+                      //   ),
                     ],
                   ),
                 ),
-                customCheckbox(context, todo.isDone ?? false),
+                // customCheckbox(context, todo.isDone ?? false),
               ],
             ),
           ),

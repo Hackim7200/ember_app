@@ -20,6 +20,7 @@ class EventNotifier extends _$EventNotifier {
     // Fetch initial data
     return EventService.getAll();
   }
+  //
 
   // Simple optimistic updates - UI responds instantly
 

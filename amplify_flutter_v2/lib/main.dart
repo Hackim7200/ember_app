@@ -1,13 +1,12 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-
 import 'package:ember/models/ModelProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:ember/app/app.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'amplify_outputs.dart';
+
 
 Future<void> main() async {
   try {
@@ -37,3 +36,4 @@ Future<void> _configureAmplify() async {
     safePrint('Error configuring Amplify: $e');
   }
 }
+

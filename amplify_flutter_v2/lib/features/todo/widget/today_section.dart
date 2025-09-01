@@ -1,6 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:ember/features/todo/widget/add_task_bottom_sheet.dart';
-import 'package:ember/features/todo/widget/task_item.dart';
+import 'package:ember/features/todo/widget/todo_card.dart';
 
 import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +97,7 @@ class _TodaySectionState extends State<TodaySection> {
             }
           },
           itemBuilder: (context, index) {
-            return TaskItem(
+            return TodoCard(
               key: ValueKey(_todos[index].id),
               todo: _todos[index],
               onTap: () {
@@ -109,6 +109,7 @@ class _TodaySectionState extends State<TodaySection> {
                       id: currentTodo.id,
                       content: currentTodo.content,
                       isDone: !(currentTodo.isDone ?? false),
+                      pomodoros: currentTodo.pomodoros,
                     );
                     _todos[index] = updatedTodo;
                   });
