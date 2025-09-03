@@ -75,20 +75,7 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
     }
   }
 
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final tomorrow = today.add(const Duration(days: 1));
-    final selectedDate = DateTime(date.year, date.month, date.day);
-
-    if (selectedDate.isAtSameMomentAs(today)) {
-      return 'Today';
-    } else if (selectedDate.isAtSameMomentAs(tomorrow)) {
-      return 'Tomorrow';
-    } else {
-      return '${date.day}/${date.month}/${date.year}';
-    }
-  }
+  
 
   @override
   Widget build(BuildContext context) {

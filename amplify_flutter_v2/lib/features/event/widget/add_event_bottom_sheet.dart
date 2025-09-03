@@ -1,4 +1,5 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:ember/app/theme.dart';
 import 'package:ember/core/app_icons.dart';
 import 'package:ember/features/event/provider/event_provider.dart';
 import 'package:ember/models/ModelProvider.dart';
@@ -213,79 +214,30 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
             ),
           ),
 
-          // Date input
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            child: InkWell(
-              onTap: () => _selectDate(context),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
+            child: Row(
+              children: [
+                // Date selector
+                _buildSelector(
+                  onTap: () => _selectDate(context),
+                  icon: Icons.calendar_today,
+                  text: _isToday
+                      ? 'Today'
+                      : '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                  isPlaceholder: _isToday,
                 ),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today,
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                      size: 20,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      _isToday
-                          ? 'Today'
-                          : '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
-                      style: TextStyle(
-                        color: _isToday
-                            ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
-                            : theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
 
-          // Time input
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            child: InkWell(
-              onTap: () => _selectTime(context),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
+                const SizedBox(width: 12),
+
+                // Time selector
+                _buildSelector(
+                  onTap: () => _selectTime(context),
+                  icon: Icons.access_time,
+                  text: _isCurrentTime ? 'Time' : _selectedTime.format(context),
+                  isPlaceholder: _isCurrentTime,
                 ),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.access_time,
-                      color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-                      size: 20,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      _isCurrentTime
-                          ? 'Select time'
-                          : _selectedTime.format(context),
-                      style: TextStyle(
-                        color: _isCurrentTime
-                            ? theme.colorScheme.onSurface.withValues(alpha: 0.5)
-                            : theme.colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              ],
             ),
           ),
 
@@ -310,7 +262,7 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
 
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
+                          crossAxisCount: 4,
                           crossAxisSpacing: 12,
                           mainAxisSpacing: 12,
                           childAspectRatio: 1.2,
@@ -428,6 +380,45 @@ class _AddEventBottomSheetState extends ConsumerState<AddEventBottomSheet> {
           // Bottom safe area
           SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSelector({
+    required VoidCallback onTap,
+    required IconData icon,
+    required String text,
+    required bool isPlaceholder,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          decoration: BoxDecoration(
+            color: lightTheme.colorScheme.onSurface.withValues(alpha: 0.05),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                color: lightTheme.colorScheme.onSurface.withValues(alpha: 0.7),
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Text(
+                text,
+                style: TextStyle(
+                  fontSize: 13,
+                  color: lightTheme.colorScheme.onSurface.withValues(
+                    alpha: isPlaceholder ? 0.5 : 1.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

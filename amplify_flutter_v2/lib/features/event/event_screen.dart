@@ -27,10 +27,7 @@ class _EventScreenState extends State<EventScreen> {
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.transparent,
-              builder: (context) => AddEventBottomSheet(
-                // onAddTask:
-                //     () {}, // optional: can be removed if you refactor the sheet
-              ),
+              builder: (context) => AddEventBottomSheet(),
             );
             if (!mounted) return;
             if (newEvent != null) {

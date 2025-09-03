@@ -1,4 +1,3 @@
-
 import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +32,7 @@ class TaskCard extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              todo.content ?? '',
+                              todo.content,
                               style: TextStyle(
                                 fontSize: 16,
                                 decoration: todo.isDone == true
