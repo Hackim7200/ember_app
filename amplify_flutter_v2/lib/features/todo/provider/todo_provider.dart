@@ -98,10 +98,7 @@ final todayTaskProvider = Provider<List<Todo>>((ref) {
   final DateTime todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59);
 
   final List<Todo> todayTodos = todos.where((Todo todo) {
-    final TemporalDateTime? temporalDate = todo.date;
-    if (temporalDate == null) {
-      return false;
-    }
+    final TemporalDateTime temporalDate = todo.date;
     final DateTime todoDate = temporalDate.getDateTimeInUtc().toLocal();
     return todoDate.isAfter(todayStart.subtract(const Duration(seconds: 1))) &&
         todoDate.isBefore(todayEnd.add(const Duration(seconds: 1)));
@@ -121,10 +118,8 @@ final tomorrowTaskProvider = Provider<List<Todo>>((ref) {
   final DateTime tomorrowEnd = todayEnd.add(const Duration(days: 1));
 
   final List<Todo> tomorrowTodos = todos.where((Todo todo) {
-    final TemporalDateTime? temporalDate = todo.date;
-    if (temporalDate == null) {
-      return false;
-    }
+    final TemporalDateTime temporalDate = todo.date;
+
     final DateTime todoDate = temporalDate.getDateTimeInUtc().toLocal();
     return todoDate.isAfter(todayEnd) &&
         todoDate.isBefore(tomorrowEnd.add(const Duration(seconds: 1)));

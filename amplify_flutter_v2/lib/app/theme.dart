@@ -9,6 +9,12 @@ class AppColors {
   static const Color secondary = Color(0xFF0D80F2);
   static const Color surface = Colors.white;
   static const Color error = Colors.red;
+
+  // Pomodoro specific colors
+  static const Color pomodoroRed = Color(0xFFD32F2F);
+  static const Color pomodoroDarkRed = Color(0xFFB71C1C);
+  static const Color pomodoroLightRed = Color(0xFFFFEBEE);
+  static const Color pomodoroBackground = Color(0xFF8B0000);
 }
 
 final ThemeData lightTheme = ThemeData(

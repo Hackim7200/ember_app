@@ -14,14 +14,14 @@ class AddTaskBottomSheet extends ConsumerStatefulWidget {
 
 class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
   final _taskNameController = TextEditingController();
-  final _breakdownController = TextEditingController();
+  // final _breakdownController = TextEditingController();
   double _pomodoros = 1.0;
   DateTime _selectedDate = DateTime.now();
 
   @override
   void dispose() {
     _taskNameController.dispose();
-    _breakdownController.dispose();
+    // _breakdownController.dispose();
     super.dispose();
   }
 
@@ -47,7 +47,7 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
       final newTodo = Todo(
         content: _taskNameController.text.trim(),
         isDone: false,
-        breakdown: _breakdownController.text.trim(),
+        // breakdown: _breakdownController.text.trim(),
         pomodoros: _pomodoros.toInt(),
         date: TemporalDateTime(_selectedDate),
       );
@@ -137,26 +137,26 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
           ),
 
           // Breakdown input
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            child: TextField(
-              controller: _breakdownController,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: 'Breakdown',
-                filled: true,
-                fillColor: theme.colorScheme.onSurface.withValues(alpha: 0.05),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
-                ),
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          //   child: TextField(
+          //     controller: _breakdownController,
+          //     maxLines: 3,
+          //     decoration: InputDecoration(
+          //       hintText: 'Breakdown',
+          //       filled: true,
+          //       fillColor: theme.colorScheme.onSurface.withValues(alpha: 0.05),
+          //       border: OutlineInputBorder(
+          //         borderRadius: BorderRadius.circular(12),
+          //         borderSide: BorderSide.none,
+          //       ),
+          //       contentPadding: const EdgeInsets.symmetric(
+          //         horizontal: 16,
+          //         vertical: 16,
+          //       ),
+          //     ),
+          //   ),
+          // ),
 
           // Date selection section
           Padding(

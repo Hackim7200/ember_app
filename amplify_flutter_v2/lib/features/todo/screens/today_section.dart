@@ -1,5 +1,6 @@
 import 'package:ember/features/todo/provider/todo_provider.dart';
-import 'package:ember/features/todo/widget/stop_watch.dart';
+import 'package:ember/features/todo/screens/breakdown_screen.dart';
+
 import 'package:ember/features/todo/widget/todo_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,7 +46,7 @@ class TodaySection extends ConsumerWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StopwatchPage()),
+                    MaterialPageRoute(builder: (context) => BreakdownScreen()),
                   );
                 },
               );
