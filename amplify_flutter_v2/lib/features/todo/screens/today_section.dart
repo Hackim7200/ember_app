@@ -1,4 +1,5 @@
 import 'package:ember/features/todo/provider/todo_provider.dart';
+import 'package:ember/features/todo/widget/stop_watch.dart';
 import 'package:ember/features/todo/widget/todo_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,7 +39,16 @@ class TodaySection extends ConsumerWidget {
             itemCount: todayTodos.length,
             itemBuilder: (context, index) {
               final todo = todayTodos[index];
-              return TodoCard(key: ValueKey(todo.id), todo: todo);
+              return TodoCard(
+                key: ValueKey(todo.id),
+                todo: todo,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => StopwatchPage()),
+                  );
+                },
+              );
             },
           );
         },
