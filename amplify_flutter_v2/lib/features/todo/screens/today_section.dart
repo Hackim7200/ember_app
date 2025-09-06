@@ -1,5 +1,5 @@
 import 'package:ember/features/todo/provider/todo_provider.dart';
-import 'package:ember/features/todo/screens/breakdown_screen.dart';
+import 'package:ember/features/todo/widget/pomodoro_timer.dart';
 
 import 'package:ember/features/todo/widget/todo_card.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +46,7 @@ class TodaySection extends ConsumerWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BreakdownScreen()),
+                    MaterialPageRoute(builder: (context) => PomodoroTimer()),
                   );
                 },
               );

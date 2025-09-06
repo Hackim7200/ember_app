@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 enum TimerType { pomodoro, shortBreak, longBreak }
 
-class BreakdownScreen extends StatefulWidget {
-  const BreakdownScreen({super.key});
+class PomodoroTimer extends StatefulWidget {
+  const PomodoroTimer({super.key});
 
   @override
-  State<BreakdownScreen> createState() => _BreakdownScreenState();
+  State<PomodoroTimer> createState() => _PomodoroTimerState();
 }
 
-class _BreakdownScreenState extends State<BreakdownScreen> {
+class _PomodoroTimerState extends State<PomodoroTimer> {
   Timer? _timer;
   bool _isRunning = false;
   TimerType _currentTimerType = TimerType.pomodoro;
@@ -236,16 +236,16 @@ class _BreakdownScreenState extends State<BreakdownScreen> {
             const SizedBox(height: 40),
 
             // Status Text
-            Text(
-              _isRunning
-                  ? '${_getTimerTypeName()} timer is running...'
-                  : '${_getTimerTypeName()} timer is ready',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w500,
-              ),
-            ),
+            // Text(
+            //   _isRunning
+            //       ? '${_getTimerTypeName()} timer is running...'
+            //       : '${_getTimerTypeName()} timer is ready',
+            //   style: TextStyle(
+            //     fontSize: 16,
+            //     color: Colors.grey[600],
+            //     fontWeight: FontWeight.w500,
+            //   ),
+            // ),
           ],
         ),
       ),
