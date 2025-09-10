@@ -41,7 +41,8 @@ class TodoService {
       return response.data;
     } on ApiException catch (e) {
       safePrint('Create todo failed: $e');
-      return null;
+      // Instead of returning null, throw the exception so the provider can handle it
+      rethrow;
     }
   }
 

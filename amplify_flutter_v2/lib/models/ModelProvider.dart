@@ -30,7 +30,7 @@ export 'User.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "c629da7e95051fc320dcb0a9e4ada042";
+  String version = "bc408451cae559975cb74a15e76bd45f";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [Event.schema, Todo.schema, User.schema];
   @override

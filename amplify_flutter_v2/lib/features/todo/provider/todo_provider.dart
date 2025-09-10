@@ -17,15 +17,19 @@ class TodoNotifier extends _$TodoNotifier {
 
   /// Add a new todo with optimistic updates
   Future<void> addTodo(Todo todo) async {
-    final current = state.valueOrNull ?? [];
+    final List<Todo> current = state.valueOrNull ?? [];
 
     try {
       final saved = await TodoService.create(todo);
       if (saved != null) {
         state = AsyncData([...current, saved]);
+      } else {
+        // Handle the case where create returns null
+        throw Exception('Failed to create todo: API returned null');
       }
     } catch (e) {
-      // Keep current state, handle error appropriately
+      // Revert to original state and rethrow the error
+      state = AsyncData(current);
       rethrow;
     }
   }

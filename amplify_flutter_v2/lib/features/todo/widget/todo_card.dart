@@ -1,3 +1,4 @@
+import 'package:ember/app/theme.dart';
 import 'package:ember/models/Todo.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +57,7 @@ class TodoCard extends StatelessWidget {
                                     width: 18,
                                     height: 18,
                                     decoration: const BoxDecoration(
-                                      color: Color.fromARGB(255, 251, 160, 160),
+                                      color: AppColors.pomodoroRed,
                                       shape: BoxShape.circle,
                                     ),
                                   ),

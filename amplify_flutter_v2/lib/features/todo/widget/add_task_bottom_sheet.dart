@@ -34,6 +34,7 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
   void _addTask() async {
     // Validate input
     if (_taskNameController.text.trim().isEmpty) {
+      // this doesnt work since the scaffold is behind it
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please enter a task name'),
@@ -51,6 +52,8 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
         pomodoros: _pomodoros.toInt(),
         date: TemporalDateTime(_selectedDate),
       );
+
+      safePrint(newTodo.toString());
 
       // Use the provider to add the todo
       await ref.read(todoNotifierProvider.notifier).addTodo(newTodo);
@@ -74,8 +77,6 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
       }
     }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {

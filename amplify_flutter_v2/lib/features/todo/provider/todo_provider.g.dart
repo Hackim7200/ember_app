@@ -6,7 +6,7 @@ part of 'todo_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$todoNotifierHash() => r'1e7986f99da2a8f341da7d4405a7a121746547ac';
+String _$todoNotifierHash() => r'2724dee9b6a815c8ec7c99ae50b47f40bbc5fb5b';
 
 /// Notifier provider for managing todo state
 /// Can mutate the state and handle CRUD operations

@@ -14,10 +14,6 @@ const schema = a.schema({
       isDone: a.boolean().required(),
       pomodoros: a.integer().default(1),
       date: a.datetime().required(),
-      breakdown: a.customType({
-        task: a.string().required(),
-        isCompleted: a.boolean().required(),
-      }),
     })
     .authorization((allow) => [allow.owner()]),
 

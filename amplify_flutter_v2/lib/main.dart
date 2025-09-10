@@ -7,7 +7,6 @@ import 'package:ember/app/app.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'amplify_outputs.dart';
 
-
 Future<void> main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized(); // required for sync setup
@@ -36,4 +35,3 @@ Future<void> _configureAmplify() async {
     safePrint('Error configuring Amplify: $e');
   }
 }
-
