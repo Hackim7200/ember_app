@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ember/features/todo/widget/break_time_message.dart';
 import 'package:ember/features/todo/widget/pomodoro_todo.dart';
 
 import 'package:flutter/material.dart';
@@ -16,15 +17,15 @@ class _ActionScreenState extends State<ActionScreen> {
   // Move tasks to be a state variable
   final List<Map<String, dynamic>> tasks = [
     {"title": "Read the book and ", "timeElapsed": 0, "type": "pomodoro"},
-    {"title": "Short break", "timeElapsed": 0, "type": "short_break"},
+    // {"title": "Short break", "timeElapsed": 0, "type": "short_break"},
     {"title": "Watch the video", "timeElapsed": 0, "type": "pomodoro"},
-    {"title": "Short break", "timeElapsed": 0, "type": "short_break"},
+    // {"title": "Short break", "timeElapsed": 0, "type": "short_break"},
     {"title": "Write the summary", "timeElapsed": 0, "type": "pomodoro"},
-    {"title": "Short break", "timeElapsed": 0, "type": "short_break"},
+    // {"title": "Short break", "timeElapsed": 0, "type": "short_break"},
     {"title": "Review the notes", "timeElapsed": 0, "type": "pomodoro"},
-    {"title": "Long break", "timeElapsed": 0, "type": "long_break"},
+    // {"title": "Long break", "timeElapsed": 0, "type": "long_break"},
     {"title": "Review the video", "timeElapsed": 0, "type": "pomodoro"},
-    {"title": "Long break", "timeElapsed": 0, "type": "long_break"},
+    // {"title": "Long break", "timeElapsed": 0, "type": "long_break"},
     {"title": "Review the book", "timeElapsed": 0, "type": "pomodoro"},
   ];
 
@@ -51,6 +52,7 @@ class _ActionScreenState extends State<ActionScreen> {
       } else {
         if (tasks.length > index) {
           index++;
+          _timer?.cancel();
           setState(() {
             selectedIndex = index;
           });
@@ -68,7 +70,18 @@ class _ActionScreenState extends State<ActionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Action')),
+      appBar: AppBar(title: Text('Action Plan')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          BreakTimeMessage.showBreakTimeDialog(
+            context: context,
+            breakType: 'short_break',
+            breakDuration: 5,
+            onStartBreak: () {},
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
       body: Column(
         children: [
           SizedBox(height: 16),
@@ -83,13 +96,15 @@ class _ActionScreenState extends State<ActionScreen> {
                   title: tasks[index]['title'],
                   currentTime: tasks[index]['timeElapsed'],
                   maxTime: 25,
-                  onTap: () {
+                  onfocus: () {
                     setState(() {
                       selectedIndex = index;
                     });
-                    _startTimer(index);
                   },
                   type: tasks[index]['type'],
+                  onPlay: () {
+                    _startTimer(index);
+                  },
                 );
               },
             ),

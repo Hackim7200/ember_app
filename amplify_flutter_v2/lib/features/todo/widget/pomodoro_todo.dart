@@ -7,7 +7,8 @@ class PomodoroTodo extends StatelessWidget {
 
   final int currentTime;
   final int maxTime;
-  final VoidCallback onTap;
+  final VoidCallback onfocus;
+  final VoidCallback onPlay;
   final bool isSelected;
   final String type;
 
@@ -16,9 +17,10 @@ class PomodoroTodo extends StatelessWidget {
     required this.title,
     required this.currentTime,
     required this.maxTime,
-    required this.onTap,
+    required this.onfocus,
     required this.isSelected,
     required this.type,
+    required this.onPlay,
   });
 
   @override
@@ -26,7 +28,7 @@ class PomodoroTodo extends StatelessWidget {
     final double percentage = maxTime > 0 ? currentTime / maxTime : 0.0;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: onfocus,
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
@@ -47,23 +49,33 @@ class PomodoroTodo extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ProgressTomato(percentage: percentage),
+                ProgressTomato(percentage: percentage, onTap: onPlay),
                 const SizedBox(width: 12),
                 // Task title
                 Expanded(
-                  child: Text(
-                    title,
-                    style: TextStyle(
-                      decoration: percentage >= 1.0
-                          ? TextDecoration.lineThrough
-                          : null,
-                      fontSize: 16,
-                      color: percentage >= 1.0
-                          ? Colors.grey[600]
-                          : Colors.black87,
-                    ),
+                  child: Row(
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          decoration: percentage >= 1.0
+                              ? TextDecoration.lineThrough
+                              : null,
+                          fontSize: 16,
+                          color: percentage >= 1.0
+                              ? Colors.grey[600]
+                              : Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        "25 min",
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                      ),
+                    ],
                   ),
                 ),
               ],
