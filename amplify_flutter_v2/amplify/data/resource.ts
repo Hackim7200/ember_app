@@ -8,12 +8,20 @@ const schema = a.schema({
     })
     .authorization((allow) => [allow.owner()]),
 
+  BreakdownItem: a.customType({
+    //cant use default within custom type!!
+    activity: a.string().required(),
+    timeElapsed: a.integer().required(),
+    type: a.string().required(),
+  }),
+
   Todo: a
     .model({
       content: a.string().required(),
       isDone: a.boolean().required(),
       pomodoros: a.integer().default(1),
       date: a.datetime().required(),
+      breakdown: a.ref("BreakdownItem").array(), // Array of breakdown items
     })
     .authorization((allow) => [allow.owner()]),
 

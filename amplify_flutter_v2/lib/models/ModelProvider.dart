@@ -23,18 +23,20 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'Event.dart';
 import 'Todo.dart';
 import 'User.dart';
+import 'BreakdownItem.dart';
 
+export 'BreakdownItem.dart';
 export 'Event.dart';
 export 'Todo.dart';
 export 'User.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "bc408451cae559975cb74a15e76bd45f";
+  String version = "696d16fbe8ea56856c0d51c071a7d12e";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [Event.schema, Todo.schema, User.schema];
   @override
-  List<amplify_core.ModelSchema> customTypeSchemas = [];
+  List<amplify_core.ModelSchema> customTypeSchemas = [BreakdownItem.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;

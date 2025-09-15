@@ -1,8 +1,6 @@
 import 'package:ember/features/todo/provider/todo_provider.dart';
 import 'package:ember/features/todo/screens/action_screen.dart';
 
-
-
 import 'package:ember/features/todo/widget/todo_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,7 +46,10 @@ class TodaySection extends ConsumerWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ActionScreen()),
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          ActionScreen(taskName: todo.content, todo: todo),
+                    ),
                   );
                 },
               );

@@ -1,5 +1,6 @@
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:ember/models/ModelProvider.dart';
 import 'package:ember/models/Todo.dart';
 
 class TodoService {
@@ -58,6 +59,7 @@ class TodoService {
       return null;
     }
   }
+  // Update todo
 
   // Delete todo
   static Future<bool> delete(Todo todo) async {
@@ -69,6 +71,41 @@ class TodoService {
     } on ApiException catch (e) {
       safePrint('Delete todo failed: $e');
       return false;
+    }
+  }
+
+  // Update todo
+  static Future<Todo?> addBreakdownItem(
+    Todo existingTodo,
+    BreakdownItem breakdownItem,
+  ) async {
+    try {
+      // Get current breakdown items or empty list
+      final currentBreakdown = existingTodo.breakdown ?? <BreakdownItem>[];
+
+      final updatedBreakdown = [...currentBreakdown, breakdownItem];
+
+      // Create updated todo
+      final updatedTodo = existingTodo.copyWith(breakdown: updatedBreakdown);
+      // Takes the existingTodo object
+      // Creates a completely new Todo instance
+      // Copies all existing field values from existingTodo
+      // Overwrites only the breakdown field with updatedBreakdown
+      // Keeps everything else identical (content, isDone, pomodoros, date, id, etc.)
+
+
+ 
+    // Update in database
+ 
+      final request = ModelMutations.update(updatedTodo);
+      final response = await Amplify.API.mutate(request: request).response;
+
+
+
+      return response.data;
+    } on ApiException catch (e) {
+      safePrint('Update todo failed: $e');
+      return null;
     }
   }
 }

@@ -38,7 +38,7 @@ class TommorowSection extends ConsumerWidget {
             itemCount: tommorrowTodos.length,
             itemBuilder: (context, index) {
               final todo = tommorrowTodos[index];
-              return TodoCard(key: ValueKey(todo.id), todo: todo, onTap: () {  },);
+              return TodoCard(key: ValueKey(todo.id), todo: todo, onTap: () {});
             },
           );
         },

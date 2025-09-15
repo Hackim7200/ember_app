@@ -1,12 +1,17 @@
 import 'dart:async';
 
-import 'package:ember/features/todo/widget/break_time_message.dart';
+import 'package:ember/features/todo/forms/task_breakdown_bottom_sheet.dart';
+
 import 'package:ember/features/todo/widget/pomodoro_todo.dart';
+import 'package:ember/models/BreakdownItem.dart';
+import 'package:ember/models/Todo.dart';
 
 import 'package:flutter/material.dart';
 
 class ActionScreen extends StatefulWidget {
-  const ActionScreen({super.key});
+  final String taskName;
+  final Todo todo;
+  const ActionScreen({super.key, required this.taskName, required this.todo});
 
   @override
   State<ActionScreen> createState() => _ActionScreenState();
@@ -15,19 +20,28 @@ class ActionScreen extends StatefulWidget {
 class _ActionScreenState extends State<ActionScreen> {
   int? selectedIndex;
   // Move tasks to be a state variable
-  final List<Map<String, dynamic>> tasks = [
-    {"title": "Read the book and ", "timeElapsed": 0, "type": "pomodoro"},
-    // {"title": "Short break", "timeElapsed": 0, "type": "short_break"},
-    {"title": "Watch the video", "timeElapsed": 0, "type": "pomodoro"},
-    // {"title": "Short break", "timeElapsed": 0, "type": "short_break"},
-    {"title": "Write the summary", "timeElapsed": 0, "type": "pomodoro"},
-    // {"title": "Short break", "timeElapsed": 0, "type": "short_break"},
-    {"title": "Review the notes", "timeElapsed": 0, "type": "pomodoro"},
-    // {"title": "Long break", "timeElapsed": 0, "type": "long_break"},
-    {"title": "Review the video", "timeElapsed": 0, "type": "pomodoro"},
-    // {"title": "Long break", "timeElapsed": 0, "type": "long_break"},
-    {"title": "Review the book", "timeElapsed": 0, "type": "pomodoro"},
-  ];
+  // final List<Map<String, dynamic>> tasks = [
+  //   {"activity": "Read the book and ", "timeElapsed": 0, "type": "pomodoro"},
+  //   // {"activity": "Short break", "timeElapsed": 0, "type": "short_break"},
+  //   {"activity": "Watch the video", "timeElapsed": 0, "type": "pomodoro"},
+  //   // {"activity": "Short break", "timeElapsed": 0, "type": "short_break"},
+  //   {"activity": "Write the summary", "timeElapsed": 0, "type": "pomodoro"},
+  //   // {"activity": "Short break", "timeElapsed": 0, "type": "short_break"},
+  //   {"activity": "Review the notes", "timeElapsed": 0, "type": "pomodoro"},
+  //   // {"activity": "Long break", "timeElapsed": 0, "type": "long_break"},
+  //   {"activity": "Review the video", "timeElapsed": 0, "type": "pomodoro"},
+  //   // {"activity": "Long break", "timeElapsed": 0, "type": "long_break"},
+  //   {"activity": "Review the book", "timeElapsed": 0, "type": "pomodoro"},
+  // ];
+  late List<BreakdownItem> tasks;
+
+  @override
+  void initState() {
+    super.initState();
+    tasks = List<BreakdownItem>.from(
+      widget.todo.breakdown ?? <BreakdownItem>[],
+    );
+  }
 
   Timer? _timer;
   int duration = 25;
@@ -38,16 +52,19 @@ class _ActionScreenState extends State<ActionScreen> {
     // Reset the current task's timer if switching to a different task
     if (selectedIndex != null && selectedIndex != index) {
       setState(() {
-        tasks[selectedIndex!]['timeElapsed'] = 0;
+        tasks[selectedIndex!] = tasks[selectedIndex!].copyWith(timeElapsed: 0);
+        // you cant change the value of AWS model fields directly you have to use copyWith
       });
     }
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       //code runs every second
-      if (tasks[index]['timeElapsed'] < duration) {
+      if (tasks[index].timeElapsed < duration) {
         //incriments until time is 25
         setState(() {
-          tasks[index]['timeElapsed'] = tasks[index]['timeElapsed'] + 1;
+          tasks[index] = tasks[index].copyWith(
+            timeElapsed: tasks[index].timeElapsed + 1,
+          );
         });
       } else {
         if (tasks.length > index) {
@@ -72,12 +89,20 @@ class _ActionScreenState extends State<ActionScreen> {
     return Scaffold(
       appBar: AppBar(title: Text('Action Plan')),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          BreakTimeMessage.showBreakTimeDialog(
+        onPressed: () async {
+          showModalBottomSheet(
             context: context,
-            breakType: 'short_break',
-            breakDuration: 5,
-            onStartBreak: () {},
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            builder: (context) => TaskBreakdownBottomSheet(
+              taskName: "Complete project documentation",
+              todo: widget.todo,
+              // onBreakdownAdded: (breakdown) {
+              //   // Handle the breakdown text here
+              //   // e.g., add to your task model, update database, etc.
+              //   print("Breakdown added: $breakdown");
+              // },
+            ),
           );
         },
         child: const Icon(Icons.add),
@@ -93,15 +118,15 @@ class _ActionScreenState extends State<ActionScreen> {
 
                 return PomodoroTodo(
                   isSelected: isSelected,
-                  title: tasks[index]['title'],
-                  currentTime: tasks[index]['timeElapsed'],
+                  title: tasks[index].activity,
+                  currentTime: tasks[index].timeElapsed,
                   maxTime: 25,
                   onfocus: () {
                     setState(() {
                       selectedIndex = index;
                     });
                   },
-                  type: tasks[index]['type'],
+                  type: tasks[index].type,
                   onPlay: () {
                     _startTimer(index);
                   },

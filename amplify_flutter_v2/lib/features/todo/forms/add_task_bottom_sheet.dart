@@ -14,14 +14,14 @@ class AddTaskBottomSheet extends ConsumerStatefulWidget {
 
 class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
   final _taskNameController = TextEditingController();
-  // final _breakdownController = TextEditingController();
+
   double _pomodoros = 1.0;
   DateTime _selectedDate = DateTime.now();
 
   @override
   void dispose() {
     _taskNameController.dispose();
-    // _breakdownController.dispose();
+
     super.dispose();
   }
 
