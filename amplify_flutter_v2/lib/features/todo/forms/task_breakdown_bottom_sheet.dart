@@ -45,13 +45,18 @@ class _TaskBreakdownBottomSheetState
     try {
       final breakdown = _breakdownController.text.trim();
 
-      final breakdownItem = BreakdownItem(
-        activity: breakdown,
-        timeElapsed: 10,
-        type: "breakdown",
+      final todo = widget.todo.copyWith(
+        breakdown: [
+          ...widget.todo.breakdown ?? [],
+          BreakdownItem(
+            activity: breakdown,
+            timeElapsed: 10,
+            type: "breakdown",
+          ),
+        ],
       );
 
-      await TodoService.addBreakdownItem(widget.todo, breakdownItem);
+      await TodoService.update(todo);
 
       // Close the bottom sheet and show success message
       if (mounted) {

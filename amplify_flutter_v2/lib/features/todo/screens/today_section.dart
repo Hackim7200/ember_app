@@ -48,7 +48,7 @@ class TodaySection extends ConsumerWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) =>
-                          ActionScreen(taskName: todo.content, todo: todo),
+                          ActionScreen(todo: todo),
                     ),
                   );
                 },

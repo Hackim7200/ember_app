@@ -1,5 +1,4 @@
 import 'package:ember/features/todo/services/todo_service.dart';
-import 'package:ember/models/BreakdownItem.dart';
 import 'package:ember/models/Todo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
@@ -82,6 +81,7 @@ class TodoNotifier extends _$TodoNotifier {
     }
   }
 
+
   Future<void> addBreakdownItem(Todo todo) async {
     final current = state.valueOrNull ?? [];
     final index = current.indexWhere((e) => e.id == todo.id);
@@ -138,7 +138,6 @@ final todayTaskProvider = Provider<List<Todo>>((ref) {
   }).toList();
 
   safePrint('Today provider - Fil tered todos: ${todayTodos.length}');
-
   return todayTodos;
 });
 

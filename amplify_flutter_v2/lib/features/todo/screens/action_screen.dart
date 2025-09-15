@@ -1,23 +1,24 @@
 import 'dart:async';
 
 import 'package:ember/features/todo/forms/task_breakdown_bottom_sheet.dart';
+import 'package:ember/features/todo/provider/todo_provider.dart';
 
 import 'package:ember/features/todo/widget/pomodoro_todo.dart';
 import 'package:ember/models/BreakdownItem.dart';
 import 'package:ember/models/Todo.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ActionScreen extends StatefulWidget {
-  final String taskName;
+class ActionScreen extends ConsumerStatefulWidget {
   final Todo todo;
-  const ActionScreen({super.key, required this.taskName, required this.todo});
+  const ActionScreen({super.key, required this.todo});
 
   @override
-  State<ActionScreen> createState() => _ActionScreenState();
+  ConsumerState<ActionScreen> createState() => _ActionScreenState();
 }
 
-class _ActionScreenState extends State<ActionScreen> {
+class _ActionScreenState extends ConsumerState<ActionScreen> {
   int? selectedIndex;
   // Move tasks to be a state variable
   // final List<Map<String, dynamic>> tasks = [
@@ -34,6 +35,8 @@ class _ActionScreenState extends State<ActionScreen> {
   //   {"activity": "Review the book", "timeElapsed": 0, "type": "pomodoro"},
   // ];
   late List<BreakdownItem> tasks;
+
+  final breakdownItemsAsync = ref.watch(todoNotifierProvider);
 
   @override
   void initState() {
