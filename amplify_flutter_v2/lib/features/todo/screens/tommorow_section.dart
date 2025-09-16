@@ -1,4 +1,5 @@
 import 'package:ember/features/todo/provider/todo_provider.dart';
+import 'package:ember/features/todo/screens/action_screen.dart';
 import 'package:ember/features/todo/widget/todo_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +25,7 @@ class TommorowSection extends ConsumerWidget {
                 children: [
                   Icon(Icons.task_alt, size: 64, color: Colors.grey),
                   SizedBox(height: 16),
-                  Text('No upcoming todos', style: TextStyle(fontSize: 18)),
+                  Text('No tasks for tomorrow', style: TextStyle(fontSize: 18)),
                   Text(
                     'Pull down to refresh',
                     style: TextStyle(color: Colors.grey),
@@ -34,12 +35,27 @@ class TommorowSection extends ConsumerWidget {
             );
           }
 
-          return ListView.builder(
-            itemCount: tommorrowTodos.length,
-            itemBuilder: (context, index) {
-              final todo = tommorrowTodos[index];
-              return TodoCard(key: ValueKey(todo.id), todo: todo, onTap: () {});
-            },
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+
+            child: ListView.builder(
+              itemCount: tommorrowTodos.length,
+              itemBuilder: (context, index) {
+                final todo = tommorrowTodos[index];
+                return TodoCard(
+                  key: ValueKey(todo.id),
+                  todo: todo,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ActionScreen(todo: todo),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),

@@ -81,35 +81,6 @@ class TodoNotifier extends _$TodoNotifier {
     }
   }
 
-
-  Future<void> addBreakdownItem(Todo todo) async {
-    final current = state.valueOrNull ?? [];
-    final index = current.indexWhere((e) => e.id == todo.id);
-
-    if (index == -1) return;
-
-    // Update UI immediately (optimistic update)
-    final updated = [...current];
-    updated[index] = todo;
-    state = AsyncData(updated);
-
-    // Save to server
-    try {
-      final saved = await TodoService.update(todo);
-      if (saved != null) {
-        updated[index] = saved;
-        state = AsyncData(updated);
-      } else {
-        // Revert to original state if update failed
-        state = AsyncData(current);
-      }
-    } catch (e) {
-      // Revert to original state on error
-      state = AsyncData(current);
-      rethrow;
-    }
-  }
-
   /// Refresh todos from the server
   Future<void> refresh() async {
     state = const AsyncLoading();

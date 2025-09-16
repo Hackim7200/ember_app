@@ -1,7 +1,6 @@
-import 'package:ember/features/todo/services/todo_service.dart';
+import 'package:ember/features/todo/provider/todo_provider.dart';
 import 'package:ember/models/BreakdownItem.dart';
 import 'package:ember/models/Todo.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -44,19 +43,22 @@ class _TaskBreakdownBottomSheetState
 
     try {
       final breakdown = _breakdownController.text.trim();
+      // You add breakdown as if your changing a variable of the Todo
 
       final todo = widget.todo.copyWith(
         breakdown: [
           ...widget.todo.breakdown ?? [],
           BreakdownItem(
-            activity: breakdown,
-            timeElapsed: 10,
-            type: "breakdown",
+            activity: breakdown.trim(),
+            minutesElapsed: 0,
+            type: "pomodoro",
           ),
         ],
       );
 
-      await TodoService.update(todo);
+      await ref.read(todoNotifierProvider.notifier).updateTodo(todo);
+
+      // await TodoService.update(todo);
 
       // Close the bottom sheet and show success message
       if (mounted) {

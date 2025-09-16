@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class ProgressTomato extends StatelessWidget {
   final double percentage;
   final VoidCallback onTap;
+  final bool isRunning;
 
   const ProgressTomato({
     super.key,
     required this.percentage,
     required this.onTap,
+    required this.isRunning,
   });
 
   @override
@@ -47,7 +49,7 @@ class ProgressTomato extends StatelessWidget {
         ),
       );
     }
-    // In progress: show progress indicator
+    // In progress: show progress indicator with play/pause icon
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
@@ -73,6 +75,14 @@ class ProgressTomato extends StatelessWidget {
                 valueColor: const AlwaysStoppedAnimation<Color>(
                   AppColors.pomodoroRed,
                 ),
+              ),
+            ),
+            // Add play/pause icon overlay
+            Center(
+              child: Icon(
+                isRunning ? Icons.pause : Icons.play_arrow,
+                color: AppColors.pomodoroRed,
+                size: 12,
               ),
             ),
           ],

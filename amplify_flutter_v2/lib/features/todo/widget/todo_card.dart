@@ -50,7 +50,7 @@ class TodoCard extends StatelessWidget {
                             ),
                             Row(
                               children: List.generate(
-                                todo.pomodoros ?? 1,
+                                todo.breakdown?.length ?? 0,
                                 (int i) => Padding(
                                   padding: const EdgeInsets.only(left: 5.0),
                                   child: Container(

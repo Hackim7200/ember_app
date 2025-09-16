@@ -14,14 +14,14 @@ class AddTaskBottomSheet extends ConsumerStatefulWidget {
 
 class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
   final _taskNameController = TextEditingController();
-
-  double _pomodoros = 1.0;
+  // final _breakdownController = TextEditingController();
+  // double _pomodoros = 1.0;
   DateTime _selectedDate = DateTime.now();
 
   @override
   void dispose() {
     _taskNameController.dispose();
-
+    // _breakdownController.dispose();
     super.dispose();
   }
 
@@ -49,7 +49,7 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
         content: _taskNameController.text.trim(),
         isDone: false,
         // breakdown: _breakdownController.text.trim(),
-        pomodoros: _pomodoros.toInt(),
+        // pomodoros: _pomodoros.toInt(),
         date: TemporalDateTime(_selectedDate),
       );
 
@@ -137,28 +137,6 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
             ),
           ),
 
-          // Breakdown input
-          // Padding(
-          //   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-          //   child: TextField(
-          //     controller: _breakdownController,
-          //     maxLines: 3,
-          //     decoration: InputDecoration(
-          //       hintText: 'Breakdown',
-          //       filled: true,
-          //       fillColor: theme.colorScheme.onSurface.withValues(alpha: 0.05),
-          //       border: OutlineInputBorder(
-          //         borderRadius: BorderRadius.circular(12),
-          //         borderSide: BorderSide.none,
-          //       ),
-          //       contentPadding: const EdgeInsets.symmetric(
-          //         horizontal: 16,
-          //         vertical: 16,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-
           // Date selection section
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -201,68 +179,68 @@ class _AddTaskBottomSheetState extends ConsumerState<AddTaskBottomSheet> {
           ),
 
           // Pomodoros section
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Pomodoros',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Text(
-                      'Pomodoros',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: theme.colorScheme.onSurface.withValues(
-                          alpha: 0.7,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: SliderTheme(
-                        data: SliderTheme.of(context).copyWith(
-                          activeTrackColor: theme.colorScheme.primary,
-                          inactiveTrackColor: theme.colorScheme.outline
-                              .withValues(alpha: 0.3),
-                          thumbColor: theme.colorScheme.primary,
-                          trackHeight: 4,
-                          thumbShape: const RoundSliderThumbShape(
-                            enabledThumbRadius: 8,
-                          ),
-                        ),
-                        child: Slider(
-                          value: _pomodoros,
-                          min: 1.0,
-                          max: 10.0,
-                          divisions: 9,
-                          onChanged: (value) {
-                            setState(() {
-                              _pomodoros = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Text(
-                      _pomodoros.toInt().toString(),
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.start,
+          //     children: [
+          //       Text(
+          //         'Pomodoros',
+          //         style: theme.textTheme.titleLarge?.copyWith(
+          //           fontWeight: FontWeight.bold,
+          //           color: theme.colorScheme.onSurface,
+          //         ),
+          //       ),
+          //       const SizedBox(height: 12),
+          //       Row(
+          //         children: [
+          //           Text(
+          //             'Pomodoros',
+          //             style: theme.textTheme.bodyLarge?.copyWith(
+          //               color: theme.colorScheme.onSurface.withValues(
+          //                 alpha: 0.7,
+          //               ),
+          //             ),
+          //           ),
+          //           const SizedBox(width: 16),
+          //           Expanded(
+          //             child: SliderTheme(
+          //               data: SliderTheme.of(context).copyWith(
+          //                 activeTrackColor: theme.colorScheme.primary,
+          //                 inactiveTrackColor: theme.colorScheme.outline
+          //                     .withValues(alpha: 0.3),
+          //                 thumbColor: theme.colorScheme.primary,
+          //                 trackHeight: 4,
+          //                 thumbShape: const RoundSliderThumbShape(
+          //                   enabledThumbRadius: 8,
+          //                 ),
+          //               ),
+          //               child: Slider(
+          //                 value: _pomodoros,
+          //                 min: 1.0,
+          //                 max: 10.0,
+          //                 divisions: 9,
+          //                 onChanged: (value) {
+          //                   setState(() {
+          //                     _pomodoros = value;
+          //                   });
+          //                 },
+          //               ),
+          //             ),
+          //           ),
+          //           const SizedBox(width: 16),
+          //           Text(
+          //             _pomodoros.toInt().toString(),
+          //             style: theme.textTheme.titleLarge?.copyWith(
+          //               fontWeight: FontWeight.bold,
+          //               color: theme.colorScheme.primary,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
           // Action buttons
           Padding(

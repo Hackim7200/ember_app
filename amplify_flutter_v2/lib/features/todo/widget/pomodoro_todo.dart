@@ -1,15 +1,18 @@
 import 'package:ember/app/theme.dart';
+
 import 'package:ember/features/todo/widget/progress_tomato.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PomodoroTodo extends StatelessWidget {
+class PomodoroTodo extends ConsumerStatefulWidget {
   final String title;
 
-  final int currentTime;
-  final int maxTime;
+  final Duration currentTime;
+  final Duration maxTime;
   final VoidCallback onfocus;
   final VoidCallback onPlay;
   final bool isSelected;
+  final bool isRunning;
   final String type;
 
   const PomodoroTodo({
@@ -19,28 +22,39 @@ class PomodoroTodo extends StatelessWidget {
     required this.maxTime,
     required this.onfocus,
     required this.isSelected,
+    required this.isRunning,
     required this.type,
     required this.onPlay,
   });
 
   @override
+  ConsumerState<PomodoroTodo> createState() => _PomodoroTodoState();
+}
+
+class _PomodoroTodoState extends ConsumerState<PomodoroTodo> {
+  @override
   Widget build(BuildContext context) {
-    final double percentage = maxTime > 0 ? currentTime / maxTime : 0.0;
+    final double percentage = widget.maxTime > Duration.zero
+        ? ((widget.currentTime.inMinutes * 60) + widget.currentTime.inSeconds) /
+              ((widget.maxTime.inMinutes * 60) + widget.currentTime.inSeconds)
+        : 0.0;
 
     return GestureDetector(
-      onTap: onfocus,
+      onTap: widget.onfocus,
       child: Container(
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
           border: Border.all(
-            color: isSelected ? AppColors.pomodoroRed : Colors.transparent,
+            color: widget.isSelected
+                ? AppColors.pomodoroRed
+                : Colors.transparent,
           ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Material(
-          color: type == "pomodoro"
+          color: widget.type == "pomodoro"
               ? Colors.white
-              : type == "long_break"
+              : widget.type == "long_break"
               ? const Color.fromARGB(255, 50, 255, 211)
               : const Color.fromARGB(255, 206, 255, 181),
           borderRadius: BorderRadius.circular(12),
@@ -52,14 +66,18 @@ class PomodoroTodo extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                ProgressTomato(percentage: percentage, onTap: onPlay),
+                ProgressTomato(
+                  percentage: percentage,
+                  onTap: widget.onPlay,
+                  isRunning: widget.isRunning,
+                ),
                 const SizedBox(width: 12),
                 // Task title
                 Expanded(
                   child: Row(
                     children: [
                       Text(
-                        title,
+                        widget.title,
                         style: TextStyle(
                           decoration: percentage >= 1.0
                               ? TextDecoration.lineThrough
@@ -72,7 +90,7 @@ class PomodoroTodo extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        "25 min",
+                        "${widget.currentTime.inMinutes} min ${widget.currentTime.inSeconds % 60} sec",
                         style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ],

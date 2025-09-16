@@ -36,24 +36,26 @@ class TodaySection extends ConsumerWidget {
             );
           }
 
-          return ListView.builder(
-            itemCount: todayTodos.length,
-            itemBuilder: (context, index) {
-              final todo = todayTodos[index];
-              return TodoCard(
-                key: ValueKey(todo.id),
-                todo: todo,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ActionScreen(todo: todo),
-                    ),
-                  );
-                },
-              );
-            },
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: ListView.builder(
+              itemCount: todayTodos.length,
+              itemBuilder: (context, index) {
+                final todo = todayTodos[index];
+                return TodoCard(
+                  key: ValueKey(todo.id),
+                  todo: todo,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ActionScreen(todo: todo),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),

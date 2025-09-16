@@ -26,7 +26,7 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 /** This is an auto generated class representing the BreakdownItem type in your schema. */
 class BreakdownItem {
   final String? _activity;
-  final int? _timeElapsed;
+  final int? _minutesElapsed;
   final String? _type;
 
   String get activity {
@@ -42,9 +42,9 @@ class BreakdownItem {
     }
   }
   
-  int get timeElapsed {
+  int get minutesElapsed {
     try {
-      return _timeElapsed!;
+      return _minutesElapsed!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -68,12 +68,12 @@ class BreakdownItem {
     }
   }
   
-  const BreakdownItem._internal({required activity, required timeElapsed, required type}): _activity = activity, _timeElapsed = timeElapsed, _type = type;
+  const BreakdownItem._internal({required activity, required minutesElapsed, required type}): _activity = activity, _minutesElapsed = minutesElapsed, _type = type;
   
-  factory BreakdownItem({required String activity, required int timeElapsed, required String type}) {
+  factory BreakdownItem({required String activity, required int minutesElapsed, required String type}) {
     return BreakdownItem._internal(
       activity: activity,
-      timeElapsed: timeElapsed,
+      minutesElapsed: minutesElapsed,
       type: type);
   }
   
@@ -86,7 +86,7 @@ class BreakdownItem {
     if (identical(other, this)) return true;
     return other is BreakdownItem &&
       _activity == other._activity &&
-      _timeElapsed == other._timeElapsed &&
+      _minutesElapsed == other._minutesElapsed &&
       _type == other._type;
   }
   
@@ -99,44 +99,44 @@ class BreakdownItem {
     
     buffer.write("BreakdownItem {");
     buffer.write("activity=" + "$_activity" + ", ");
-    buffer.write("timeElapsed=" + (_timeElapsed != null ? _timeElapsed!.toString() : "null") + ", ");
+    buffer.write("minutesElapsed=" + (_minutesElapsed != null ? _minutesElapsed!.toString() : "null") + ", ");
     buffer.write("type=" + "$_type");
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  BreakdownItem copyWith({String? activity, int? timeElapsed, String? type}) {
+  BreakdownItem copyWith({String? activity, int? minutesElapsed, String? type}) {
     return BreakdownItem._internal(
       activity: activity ?? this.activity,
-      timeElapsed: timeElapsed ?? this.timeElapsed,
+      minutesElapsed: minutesElapsed ?? this.minutesElapsed,
       type: type ?? this.type);
   }
   
   BreakdownItem copyWithModelFieldValues({
     ModelFieldValue<String>? activity,
-    ModelFieldValue<int>? timeElapsed,
+    ModelFieldValue<int>? minutesElapsed,
     ModelFieldValue<String>? type
   }) {
     return BreakdownItem._internal(
       activity: activity == null ? this.activity : activity.value,
-      timeElapsed: timeElapsed == null ? this.timeElapsed : timeElapsed.value,
+      minutesElapsed: minutesElapsed == null ? this.minutesElapsed : minutesElapsed.value,
       type: type == null ? this.type : type.value
     );
   }
   
   BreakdownItem.fromJson(Map<String, dynamic> json)  
     : _activity = json['activity'],
-      _timeElapsed = (json['timeElapsed'] as num?)?.toInt(),
+      _minutesElapsed = (json['minutesElapsed'] as num?)?.toInt(),
       _type = json['type'];
   
   Map<String, dynamic> toJson() => {
-    'activity': _activity, 'timeElapsed': _timeElapsed, 'type': _type
+    'activity': _activity, 'minutesElapsed': _minutesElapsed, 'type': _type
   };
   
   Map<String, Object?> toMap() => {
     'activity': _activity,
-    'timeElapsed': _timeElapsed,
+    'minutesElapsed': _minutesElapsed,
     'type': _type
   };
 
@@ -151,7 +151,7 @@ class BreakdownItem {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'timeElapsed',
+      fieldName: 'minutesElapsed',
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
     ));

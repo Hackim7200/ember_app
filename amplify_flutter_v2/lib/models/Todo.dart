@@ -30,7 +30,6 @@ class Todo extends amplify_core.Model {
   final String id;
   final String? _content;
   final bool? _isDone;
-  final int? _pomodoros;
   final amplify_core.TemporalDateTime? _date;
   final List<BreakdownItem>? _breakdown;
   final amplify_core.TemporalDateTime? _createdAt;
@@ -75,10 +74,6 @@ class Todo extends amplify_core.Model {
     }
   }
   
-  int? get pomodoros {
-    return _pomodoros;
-  }
-  
   amplify_core.TemporalDateTime get date {
     try {
       return _date!;
@@ -104,14 +99,13 @@ class Todo extends amplify_core.Model {
     return _updatedAt;
   }
   
-  const Todo._internal({required this.id, required content, required isDone, pomodoros, required date, breakdown, createdAt, updatedAt}): _content = content, _isDone = isDone, _pomodoros = pomodoros, _date = date, _breakdown = breakdown, _createdAt = createdAt, _updatedAt = updatedAt;
+  const Todo._internal({required this.id, required content, required isDone, required date, breakdown, createdAt, updatedAt}): _content = content, _isDone = isDone, _date = date, _breakdown = breakdown, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory Todo({String? id, required String content, required bool isDone, int? pomodoros, required amplify_core.TemporalDateTime date, List<BreakdownItem>? breakdown}) {
+  factory Todo({String? id, required String content, required bool isDone, required amplify_core.TemporalDateTime date, List<BreakdownItem>? breakdown}) {
     return Todo._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       content: content,
       isDone: isDone,
-      pomodoros: pomodoros,
       date: date,
       breakdown: breakdown != null ? List<BreakdownItem>.unmodifiable(breakdown) : breakdown);
   }
@@ -127,7 +121,6 @@ class Todo extends amplify_core.Model {
       id == other.id &&
       _content == other._content &&
       _isDone == other._isDone &&
-      _pomodoros == other._pomodoros &&
       _date == other._date &&
       DeepCollectionEquality().equals(_breakdown, other._breakdown);
   }
@@ -143,7 +136,6 @@ class Todo extends amplify_core.Model {
     buffer.write("id=" + "$id" + ", ");
     buffer.write("content=" + "$_content" + ", ");
     buffer.write("isDone=" + (_isDone != null ? _isDone!.toString() : "null") + ", ");
-    buffer.write("pomodoros=" + (_pomodoros != null ? _pomodoros!.toString() : "null") + ", ");
     buffer.write("date=" + (_date != null ? _date!.format() : "null") + ", ");
     buffer.write("breakdown=" + (_breakdown != null ? _breakdown!.toString() : "null") + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -153,12 +145,11 @@ class Todo extends amplify_core.Model {
     return buffer.toString();
   }
   
-  Todo copyWith({String? content, bool? isDone, int? pomodoros, amplify_core.TemporalDateTime? date, List<BreakdownItem>? breakdown}) {
+  Todo copyWith({String? content, bool? isDone, amplify_core.TemporalDateTime? date, List<BreakdownItem>? breakdown}) {
     return Todo._internal(
       id: id,
       content: content ?? this.content,
       isDone: isDone ?? this.isDone,
-      pomodoros: pomodoros ?? this.pomodoros,
       date: date ?? this.date,
       breakdown: breakdown ?? this.breakdown);
   }
@@ -166,7 +157,6 @@ class Todo extends amplify_core.Model {
   Todo copyWithModelFieldValues({
     ModelFieldValue<String>? content,
     ModelFieldValue<bool>? isDone,
-    ModelFieldValue<int?>? pomodoros,
     ModelFieldValue<amplify_core.TemporalDateTime>? date,
     ModelFieldValue<List<BreakdownItem>?>? breakdown
   }) {
@@ -174,7 +164,6 @@ class Todo extends amplify_core.Model {
       id: id,
       content: content == null ? this.content : content.value,
       isDone: isDone == null ? this.isDone : isDone.value,
-      pomodoros: pomodoros == null ? this.pomodoros : pomodoros.value,
       date: date == null ? this.date : date.value,
       breakdown: breakdown == null ? this.breakdown : breakdown.value
     );
@@ -184,7 +173,6 @@ class Todo extends amplify_core.Model {
     : id = json['id'],
       _content = json['content'],
       _isDone = json['isDone'],
-      _pomodoros = (json['pomodoros'] as num?)?.toInt(),
       _date = json['date'] != null ? amplify_core.TemporalDateTime.fromString(json['date']) : null,
       _breakdown = json['breakdown'] is List
         ? (json['breakdown'] as List)
@@ -196,14 +184,13 @@ class Todo extends amplify_core.Model {
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'id': id, 'content': _content, 'isDone': _isDone, 'pomodoros': _pomodoros, 'date': _date?.format(), 'breakdown': _breakdown?.map((BreakdownItem? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'id': id, 'content': _content, 'isDone': _isDone, 'date': _date?.format(), 'breakdown': _breakdown?.map((BreakdownItem? e) => e?.toJson()).toList(), 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
     'id': id,
     'content': _content,
     'isDone': _isDone,
-    'pomodoros': _pomodoros,
     'date': _date,
     'breakdown': _breakdown,
     'createdAt': _createdAt,
@@ -214,7 +201,6 @@ class Todo extends amplify_core.Model {
   static final ID = amplify_core.QueryField(fieldName: "id");
   static final CONTENT = amplify_core.QueryField(fieldName: "content");
   static final ISDONE = amplify_core.QueryField(fieldName: "isDone");
-  static final POMODOROS = amplify_core.QueryField(fieldName: "pomodoros");
   static final DATE = amplify_core.QueryField(fieldName: "date");
   static final BREAKDOWN = amplify_core.QueryField(fieldName: "breakdown");
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
@@ -247,12 +233,6 @@ class Todo extends amplify_core.Model {
       key: Todo.ISDONE,
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.bool)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(
-      key: Todo.POMODOROS,
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.int)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.field(

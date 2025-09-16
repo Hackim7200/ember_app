@@ -11,7 +11,7 @@ const schema = a.schema({
   BreakdownItem: a.customType({
     //cant use default within custom type!!
     activity: a.string().required(),
-    timeElapsed: a.integer().required(),
+    minutesElapsed: a.integer().required(),
     type: a.string().required(),
   }),
 
@@ -19,7 +19,7 @@ const schema = a.schema({
     .model({
       content: a.string().required(),
       isDone: a.boolean().required(),
-      pomodoros: a.integer().default(1),
+      // pomodoros: a.integer().default(1),
       date: a.datetime().required(),
       breakdown: a.ref("BreakdownItem").array(), // Array of breakdown items
     })
